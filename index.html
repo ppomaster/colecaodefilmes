@@ -6,82 +6,81 @@
 <title>Minha Coleção de Filmes</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root {
-    --primary-color:#2c3e50;--secondary-color:#3498db;--accent-color:#e74c3c;
-    --light-color:#ecf0f1;--dark-color:#34495e;--success-color:#2ecc71;
-    --warning-color:#f39c12;--background-dark:#1a2530;--card-bg:#2c3e50;
-    --dvd-color:#9b59b6;--digital-color:#3498db;--vhs-color:#e67e22;
-    --telegram-color:#1da1f2;--watched-color:#2ecc71;
-}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
-body{background:linear-gradient(135deg,var(--background-dark),var(--primary-color));color:white;min-height:100vh;padding:15px;}
-.container{max-width:1200px;margin:0 auto;}
-header{text-align:center;margin-bottom:20px;}
-.app-title{font-size:2rem;font-weight:800;margin-bottom:5px;}
-.app-title span{color:var(--accent-color);}
-.app-subtitle{color:#bbb;margin-bottom:20px;}
-.tabs{display:flex;flex-wrap:wrap;margin-bottom:15px;gap:8px;overflow-x:auto;}
-.tab{padding:10px 15px;background:rgba(255,255,255,0.1);border-radius:8px;cursor:pointer;transition:all 0.3s;font-weight:500;white-space:nowrap;}
-.tab:hover{background:rgba(255,255,255,0.2);}
-.tab.active{background:var(--secondary-color);font-weight:600;}
-.tab.dvd{border-left:4px solid var(--dvd-color);}
-.tab.digital{border-left:4px solid var(--digital-color);}
-.tab.vhs{border-left:4px solid var(--vhs-color);}
-.tab.telegram{border-left:4px solid var(--telegram-color);}
-.tab.watched{border-left:4px solid var(--watched-color);}
-.tab.favorite{border-left:4px solid var(--accent-color);}
-.movie-form{background:rgba(255,255,255,0.1);padding:15px;border-radius:10px;margin-bottom:20px;}
-.form-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
-.form-group{flex:1;min-width:150px;}
-.form-group label{display:block;margin-bottom:5px;font-weight:500;}
-.form-control{width:100%;padding:8px;border:none;border-radius:6px;background:rgba(255,255,255,0.9);}
-.btn{padding:10px 15px;border:none;border-radius:6px;cursor:pointer;font-weight:600;transition:all 0.3s;}
-.btn-primary{background:var(--secondary-color);color:white;}
-.btn-success{background:var(--success-color);color:white;}
-.btn-danger{background:var(--accent-color);color:white;}
-.btn:hover{opacity:0.9;transform:translateY(-2px);}
-.movies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:15px;}
-.movie-card{background:var(--card-bg);border-radius:10px;overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,0.2);transition:transform 0.3s;}
-.movie-card:hover{transform:translateY(-5px);}
-.movie-poster{width:100%;height:300px;object-fit:cover;}
-.movie-info{padding:10px;}
-.movie-title{font-size:1rem;font-weight:700;margin-bottom:3px;}
-.movie-year{color:#bbb;margin-bottom:5px;}
-.movie-details{margin-bottom:5px;font-size:0.85rem;color:#ddd;}
-.movie-type{display:inline-block;padding:3px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;margin-top:3px;}
-.type-dvd{background:var(--dvd-color);}
-.type-digital{background:var(--digital-color);}
-.type-vhs{background:var(--vhs-color);}
-.type-telegram{background:var(--telegram-color);}
-.movie-actions{display:flex;justify-content:space-between;margin-top:10px;}
-.action-btn{padding:5px 8px;border:none;border-radius:4px;cursor:pointer;font-size:0.8rem;}
-.delete-btn{background:var(--accent-color);color:white;}
-.watched-btn{background:var(--watched-color);color:white;}
-.favorite-btn{background:var(--secondary-color);color:white;}
-.fade-in{animation:fadeIn 0.5s ease-out;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-.empty-state{text-align:center;padding:30px;color:#bbb;grid-column:1/-1;}
-.empty-state i{font-size:2.5rem;margin-bottom:10px;color:#555;}
-@media(max-width:768px){.form-row{flex-direction:column;}.movies-grid{grid-template-columns:1fr;}}
-
-/* Estilos da tela de login */
-.login-screen {
-    display: none;
-    text-align: center;
-    margin-top: 50px;
-}
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 300px;
-    margin: 20px auto;
-}
-.login-form input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
+    /* Seus estilos CSS, exatamente como você enviou */
+    :root {
+        --primary-color:#2c3e50;--secondary-color:#3498db;--accent-color:#e74c3c;
+        --light-color:#ecf0f1;--dark-color:#34495e;--success-color:#2ecc71;
+        --warning-color:#f39c12;--background-dark:#1a2530;--card-bg:#2c3e50;
+        --dvd-color:#9b59b6;--digital-color:#3498db;--vhs-color:#e67e22;
+        --telegram-color:#1da1f2;--watched-color:#2ecc71;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+    body{background:linear-gradient(135deg,var(--background-dark),var(--primary-color));color:white;min-height:100vh;padding:15px;}
+    .container{max-width:1200px;margin:0 auto;}
+    header{text-align:center;margin-bottom:20px;}
+    .app-title{font-size:2rem;font-weight:800;margin-bottom:5px;}
+    .app-title span{color:var(--accent-color);}
+    .app-subtitle{color:#bbb;margin-bottom:20px;}
+    .tabs{display:flex;flex-wrap:wrap;margin-bottom:15px;gap:8px;overflow-x:auto;}
+    .tab{padding:10px 15px;background:rgba(255,255,255,0.1);border-radius:8px;cursor:pointer;transition:all 0.3s;font-weight:500;white-space:nowrap;}
+    .tab:hover{background:rgba(255,255,255,0.2);}
+    .tab.active{background:var(--secondary-color);font-weight:600;}
+    .tab.dvd{border-left:4px solid var(--dvd-color);}
+    .tab.digital{border-left:4px solid var(--digital-color);}
+    .tab.vhs{border-left:4px solid var(--vhs-color);}
+    .tab.telegram{border-left:4px solid var(--telegram-color);}
+    .tab.watched{border-left:4px solid var(--watched-color);}
+    .tab.favorite{border-left:4px solid var(--accent-color);}
+    .movie-form{background:rgba(255,255,255,0.1);padding:15px;border-radius:10px;margin-bottom:20px;}
+    .form-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
+    .form-group{flex:1;min-width:150px;}
+    .form-group label{display:block;margin-bottom:5px;font-weight:500;}
+    .form-control{width:100%;padding:8px;border:none;border-radius:6px;background:rgba(255,255,255,0.9);}
+    .btn{padding:10px 15px;border:none;border-radius:6px;cursor:pointer;font-weight:600;transition:all 0.3s;}
+    .btn-primary{background:var(--secondary-color);color:white;}
+    .btn-success{background:var(--success-color);color:white;}
+    .btn-danger{background:var(--accent-color);color:white;}
+    .btn:hover{opacity:0.9;transform:translateY(-2px);}
+    .movies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:15px;}
+    .movie-card{background:var(--card-bg);border-radius:10px;overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,0.2);transition:transform 0.3s;}
+    .movie-card:hover{transform:translateY(-5px);}
+    .movie-poster{width:100%;height:300px;object-fit:cover;}
+    .movie-info{padding:10px;}
+    .movie-title{font-size:1rem;font-weight:700;margin-bottom:3px;}
+    .movie-year{color:#bbb;margin-bottom:5px;}
+    .movie-details{margin-bottom:5px;font-size:0.85rem;color:#ddd;}
+    .movie-type{display:inline-block;padding:3px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;margin-top:3px;}
+    .type-dvd{background:var(--dvd-color);}
+    .type-digital{background:var(--digital-color);}
+    .type-vhs{background:var(--vhs-color);}
+    .type-telegram{background:var(--telegram-color);}
+    .movie-actions{display:flex;justify-content:space-between;margin-top:10px;}
+    .action-btn{padding:5px 8px;border:none;border-radius:4px;cursor:pointer;font-size:0.8rem;}
+    .delete-btn{background:var(--accent-color);color:white;}
+    .watched-btn{background:var(--watched-color);color:white;}
+    .favorite-btn{background:var(--secondary-color);color:white;}
+    .fade-in{animation:fadeIn 0.5s ease-out;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    .empty-state{text-align:center;padding:30px;color:#bbb;grid-column:1/-1;}
+    .empty-state i{font-size:2.5rem;margin-bottom:10px;color:#555;}
+    @media(max-width:768px){.form-row{flex-direction:column;}.movies-grid{grid-template-columns:1fr;}}
+    .login-screen {
+        display: none;
+        text-align: center;
+        margin-top: 50px;
+    }
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 300px;
+        margin: 20px auto;
+    }
+    .login-form input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
 </style>
 </head>
 <body>
@@ -104,19 +103,26 @@ header{text-align:center;margin-bottom:20px;}
         <button class="btn btn-danger" id="logout-button">Sair</button>
     </header>
 
-    <div class="tabs">
-        <div class="tab all active" data-filter="all">Todos</div>
-        <div class="tab dvd" data-filter="DVD">DVD</div>
-        <div class="tab digital" data-filter="Digital">Digital</div>
-        <div class="tab vhs" data-filter="VHS">VHS</div>
-        <div class="tab telegram" data-filter="Telegram">Telegram</div>
-        <div class="tab watched" data-filter="watched">Assistidos</div>
-        <div class="tab favorite" data-filter="favorite">Favoritos</div>
+    <div class="movie-form">
+        <h3>Buscar e Adicionar</h3>
+        <div class="form-row">
+            <div class="form-group" style="flex: 2;">
+                <label for="movie-title-search">Título do Filme</label>
+                <input type="text" id="movie-title-search" class="form-control" placeholder="Digite o título do filme">
+            </div>
+            <div class="form-group" style="flex: 1; align-self: flex-end;">
+                <button id="search-button" class="btn btn-primary" style="width: 100%;">Buscar</button>
+            </div>
+        </div>
+        <div id="movie-results" class="movies-grid">
+            </div>
     </div>
+    
+    <hr>
 
     <div class="movie-form">
-        <h3>Adicionar/Editar Filme</h3>
-        <form id="movie-form">
+        <h3>Adicionar Manualmente</h3>
+        <form id="movie-form-manual">
             <div class="form-row">
                 <div class="form-group">
                     <label for="movie-title">Título</label>
@@ -163,209 +169,255 @@ header{text-align:center;margin-bottom:20px;}
                     </label>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Adicionar / Atualizar</button>
+            <button type="submit" class="btn btn-primary">Adicionar Manualmente</button>
         </form>
     </div>
+    
+    <hr>
 
+    <div class="tabs">
+        <div class="tab all active" data-filter="all">Todos</div>
+        <div class="tab dvd" data-filter="DVD">DVD</div>
+        <div class="tab digital" data-filter="Digital">Digital</div>
+        <div class="tab vhs" data-filter="VHS">VHS</div>
+        <div class="tab telegram" data-filter="Telegram">Telegram</div>
+        <div class="tab watched" data-filter="watched">Assistidos</div>
+        <div class="tab favorite" data-filter="favorite">Favoritos</div>
+    </div>
     <div class="movies-grid" id="movies-container"></div>
 </div>
 
 <script type="module">
-        // Importa todas as funções necessárias do Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-        import { getFirestore, enableIndexedDbPersistence, doc, setDoc, getDocs, collection, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { getFirestore, enableIndexedDbPersistence, doc, setDoc, getDocs, collection, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-        // SEU OBJETO DE CONFIGURAÇÃO DO FIREBASE (VERIFIQUE AQUI)
-        const firebaseConfig = {
-            apiKey: "AIzaSyBu6FyItXddK1pghqaEURKaMiQTMQZlJks",
-            authDomain: "colecaodefilmes-dfa7a.firebaseapp.com",
-            projectId: "colecaodefilmes-dfa7a",
-            storageBucket: "colecaodefilmes-dfa7a.firebasestorage.app",
-            messagingSenderId: "495818238503",
-            appId: "1:495818238503:web:814178c233d5fb304a7c02"
-        };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    const firebaseConfig = {
+        apiKey: "AIzaSyBu6FyItXddK1pghqaEURKaMiQTMQZlJks",
+        authDomain: "colecaodefilmes-dfa7a.firebaseapp.com",
+        projectId: "colecaodefilmes-dfa7a",
+        storageBucket: "colecaodefilmes-dfa7a.firebasestorage.app",
+        messagingSenderId: "495818238503",
+        appId: "1:495818238503:web:814178c233d5fb304a7c02"
+    };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    enableIndexedDbPersistence(db).catch(err => console.warn(err));
 
-        // Chave da API do OMDb
-        const OMDb_API_KEY = "6cbfb854";
+    const OMDb_API_KEY = "6cbfb854";
+    let movies = [];
+    let currentFilter = "all";
 
-        // Habilita persistência offline
-        enableIndexedDbPersistence(db).catch(err => {
-            if (err.code === 'failed-precondition') console.warn("Múltiplas abas não suportadas para persistência offline.");
-            else if (err.code === 'unimplemented') console.warn("O navegador atual não suporta persistência offline.");
-        });
+    const loginScreen = document.getElementById("login-screen");
+    const appScreen = document.getElementById("app-screen");
+    const emailLoginForm = document.getElementById("email-login-form");
+    const googleLoginButton = document.getElementById("google-login-button");
+    const logoutButton = document.getElementById("logout-button");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    
+    // Novos elementos da busca
+    const movieTitleSearch = document.getElementById("movie-title-search");
+    const searchButton = document.getElementById("search-button");
+    const movieResults = document.getElementById("movie-results");
 
-        // Obtém referências aos elementos HTML
-        const loginScreen = document.getElementById("login-screen");
-        const appScreen = document.getElementById("app-screen");
-        const emailLoginForm = document.getElementById("email-login-form");
-        const googleLoginButton = document.getElementById("google-login-button");
-        const logoutButton = document.getElementById("logout-button");
-        const emailInput = document.getElementById("email");
-        const passwordInput = document.getElementById("password");
-        const movieForm = document.getElementById("movie-form");
-        const moviesContainer = document.getElementById("movies-container");
-        const tabs = document.querySelectorAll(".tab");
+    // Seu formulário manual
+    const movieFormManual = document.getElementById("movie-form-manual");
+    const moviesContainer = document.getElementById("movies-container");
+    const tabs = document.querySelectorAll(".tab");
 
-        // Funções para alternar as telas
-        function showLoginScreen() {
-            loginScreen.style.display = "block";
-            appScreen.style.display = "none";
+    function showLoginScreen() {
+        loginScreen.style.display = "block";
+        appScreen.style.display = "none";
+    }
+    function showAppScreen() {
+        loginScreen.style.display = "none";
+        appScreen.style.display = "block";
+        loadMovies();
+    }
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            showAppScreen();
+        } else {
+            showLoginScreen();
         }
-        function showAppScreen() {
-            loginScreen.style.display = "none";
-            appScreen.style.display = "block";
-            loadMovies();
-        }
+    });
 
-        // Observador de Autenticação
-        onAuthStateChanged(auth, user => {
-            if (user) {
-                showAppScreen();
+    emailLoginForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const submitterId = e.submitter.id;
+        try {
+            if (submitterId === 'login-button') await signInWithEmailAndPassword(auth, email, password);
+            else if (submitterId === 'signup-button') {
+                await createUserWithEmailAndPassword(auth, email, password);
+                alert("Conta criada com sucesso! Faça login agora.");
+            }
+        } catch (error) {
+            console.error("Erro na autenticação:", error.message);
+            alert("Erro: " + error.message);
+        }
+    });
+    googleLoginButton.addEventListener('click', async () => {
+        const provider = new GoogleAuthProvider();
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (error) {
+            console.error("Erro no login com Google:", error.message);
+            alert("Erro: " + error.message);
+        }
+    });
+    logoutButton.addEventListener('click', async () => {
+        try { await signOut(auth); }
+        catch (error) { console.error("Erro no logout:", error.message); }
+    });
+
+    // Lógica de Busca (Corrigida e Reposicionada)
+    searchButton.addEventListener('click', async () => {
+        const movieTitle = movieTitleSearch.value;
+        if (!movieTitle) {
+            alert("Por favor, digite o título de um filme.");
+            return;
+        }
+        const url = `https://www.omdbapi.com/?s=${encodeURIComponent(movieTitle)}&apikey=${OMDb_API_KEY}`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            movieResults.innerHTML = '';
+            if (data.Response === "True") {
+                data.Search.forEach(movie => {
+                    const card = document.createElement('div');
+                    card.className = "movie-card fade-in";
+                    card.innerHTML = `
+                        <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/300x450/2c3e50/ecf0f1?text=Sem+Imagem'}" class="movie-poster" alt="${movie.Title}">
+                        <div class="movie-info">
+                            <h3 class="movie-title">${movie.Title}</h3>
+                            <p class="movie-year">${movie.Year || ''}</p>
+                            <button class="btn btn-primary add-to-collection" data-imdbid="${movie.imdbID}" data-title="${movie.Title}" data-year="${movie.Year}" data-poster="${movie.Poster}">Adicionar à Coleção</button>
+                        </div>
+                    `;
+                    movieResults.appendChild(card);
+                });
             } else {
-                showLoginScreen();
+                movieResults.innerHTML = `<p class="empty-state">Nenhum filme encontrado. Tente novamente.</p>`;
             }
-        });
+        } catch (error) {
+            console.error("Erro ao buscar filme:", error);
+            movieResults.innerHTML = `<p class="empty-state">Erro ao buscar filme. Tente novamente mais tarde.</p>`;
+        }
+    });
 
-        // Eventos de Autenticação
-        emailLoginForm.addEventListener('submit', async e => {
-            e.preventDefault();
-            const email = emailInput.value;
-            const password = passwordInput.value;
-            const submitterId = e.submitter.id;
-            try {
-                if (submitterId === 'login-button') await signInWithEmailAndPassword(auth, email, password);
-                else if (submitterId === 'signup-button') {
-                    await createUserWithEmailAndPassword(auth, email, password);
-                    alert("Conta criada com sucesso! Faça login agora.");
-                }
-            } catch (error) {
-                console.error("Erro na autenticação:", error.message);
-                alert("Erro: " + error.message);
-            }
-        });
-        googleLoginButton.addEventListener('click', async () => {
-            const provider = new GoogleAuthProvider();
-            try {
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                console.error("Erro no login com Google:", error.message);
-                alert("Erro: " + error.message);
-            }
-        });
-        logoutButton.addEventListener('click', async () => {
-            try { await signOut(auth); }
-            catch (error) { console.error("Erro no logout:", error.message); }
-        });
-
-        // Eventos do App
-        tabs.forEach(tab => {
-            tab.addEventListener("click", () => {
-                tabs.forEach(t=>t.classList.remove("active"));
-                tab.classList.add("active");
-                currentFilter = tab.dataset.filter;
-                renderMovies();
-            });
-        });
-
-        movieForm.addEventListener("submit", async e => {
-            e.preventDefault();
-            const title = document.getElementById("movie-title").value.trim();
-            if (!title) { alert("O título é obrigatório!"); return; }
-            
+    // Adiciona o filme da busca à coleção
+    movieResults.addEventListener('click', async (e) => {
+        if (e.target.matches('.add-to-collection')) {
+            const button = e.target;
+            const movieId = button.dataset.imdbid;
             const uid = auth.currentUser.uid;
-            const movieId = `manual-${Date.now()}`;
+            if (!uid) { alert("Você precisa estar logado para adicionar filmes."); return; }
             const movieData = {
-                Title: title,
-                Year: document.getElementById("movie-year").value.trim() || null,
-                Genre: document.getElementById("movie-genre").value.trim() || null,
-                Director: document.getElementById("movie-director").value.trim() || null,
-                MediaType: document.getElementById("movie-type").value,
-                Rating: document.getElementById("movie-rating").value || null,
-                Tags: document.getElementById("movie-tags").value.split(",").map(t => t.trim()).filter(t => t),
-                Watched: document.getElementById("movie-watched").checked,
+                Title: button.dataset.title,
+                Year: button.dataset.year,
+                Poster: button.dataset.poster,
+                Watched: false,
+                Favorite: false,
+                MediaType: 'Digital', // Padrão para filmes de busca
+                source: 'omdb'
             };
             await setDoc(doc(db, `users/${uid}/movies/${movieId}`), movieData);
-            alert(`${title} adicionado à sua coleção!`);
+            alert(`"${movieData.Title}" foi adicionado à sua coleção!`);
             loadMovies();
-            movieForm.reset();
-        });
+        }
+    });
 
-        // Usando delegação de eventos para botões dinâmicos
-        document.body.addEventListener("click", async e => {
-            const target = e.target;
-            const card = target.closest('.movie-card');
-            if (!card) return;
-            const movieId = card.dataset.id;
-            const uid = auth.currentUser.uid;
-            
-            if (target.classList.contains('delete-btn')) {
-                if (confirm("Tem certeza que deseja remover este filme?")) {
-                    await deleteDoc(doc(db, `users/${uid}/movies/${movieId}`));
-                    loadMovies();
-                }
-            }
-            
-            if (target.classList.contains('watched-btn')) {
-                const movie = movies.find(m => m.id === movieId);
-                if (movie) {
-                    await updateDoc(doc(db, `users/${uid}/movies/${movieId}`), {
-                        Watched: !movie.Watched
-                    });
-                    loadMovies();
-                }
-            }
-        });
+    // Lógica de Adição Manual (Você já tinha feito, foi movida para um novo form)
+    movieFormManual.addEventListener("submit", async e => {
+        e.preventDefault();
+        const title = document.getElementById("movie-title").value.trim();
+        if (!title) { alert("O título é obrigatório!"); return; }
+        const uid = auth.currentUser.uid;
+        const movieId = `manual-${Date.now()}`;
+        const movieData = {
+            Title: title,
+            Year: document.getElementById("movie-year").value.trim() || null,
+            Genre: document.getElementById("movie-genre").value.trim() || null,
+            Director: document.getElementById("movie-director").value.trim() || null,
+            MediaType: document.getElementById("movie-type").value,
+            Rating: document.getElementById("movie-rating").value || null,
+            Tags: document.getElementById("movie-tags").value.split(",").map(t => t.trim()).filter(t => t),
+            Watched: document.getElementById("movie-watched").checked,
+            source: 'manual'
+        };
+        await setDoc(doc(db, `users/${uid}/movies/${movieId}`), movieData);
+        alert(`${title} adicionado à sua coleção!`);
+        loadMovies();
+        movieFormManual.reset();
+    });
 
-        // Renderização e Busca
-        async function loadMovies() {
-            if (!auth.currentUser) return;
-            const uid = auth.currentUser.uid;
-            const querySnapshot = await getDocs(collection(db, `users/${uid}/movies`));
-            movies = [];
-            querySnapshot.forEach(doc => movies.push({ ...doc.data(), id: doc.id }));
+    // Eventos e Lógica da Coleção
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            tabs.forEach(t=>t.classList.remove("active"));
+            tab.classList.add("active");
+            currentFilter = tab.dataset.filter;
             renderMovies();
-        }
+        });
+    });
 
-        function renderMovies() {
-            moviesContainer.innerHTML = "";
-            let filtered = movies;
-            if (currentFilter !== "all") {
-                if (currentFilter === "watched") filtered = movies.filter(m => m.Watched);
-                else if (currentFilter === "favorite") filtered = movies.filter(m => m.Favorite);
-                else filtered = movies.filter(m => m.MediaType === currentFilter);
+    document.body.addEventListener("click", async e => {
+        const target = e.target;
+        const card = target.closest('.movie-card');
+        if (!card) return;
+        const movieId = card.dataset.id;
+        const uid = auth.currentUser.uid;
+        if (!uid) return;
+        
+        if (target.classList.contains('delete-btn')) {
+            if (confirm("Tem certeza que deseja remover este filme?")) {
+                await deleteDoc(doc(db, `users/${uid}/movies/${movieId}`));
+                loadMovies();
             }
-            if (filtered.length === 0) {
-                moviesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-film"></i><h3>Nenhum filme</h3></div>`;
-                return;
-            }
-            filtered.forEach(m => {
-                const card = document.createElement("div");
-                card.className = "movie-card fade-in";
-                card.dataset.id = m.id;
-                card.innerHTML = `
-                    <img src="${m.Poster || 'https://via.placeholder.com/300x450/2c3e50/ecf0f1?text=Sem+Imagem'}" class="movie-poster" alt="${m.Title}">
-                    <div class="movie-info">
-                        <h3 class="movie-title">${m.Title}</h3>
-                        <p class="movie-year">${m.Year || ''}</p>
-                        <p class="movie-details">Gênero: ${m.Genre || 'N/A'}</p>
-                        <p class="movie-details">Diretor: ${m.Director || 'N/A'}</p>
-                        ${m.Rating ? `<p class="movie-details">Nota: ${m.Rating}/10</p>` : ''}
-                        ${m.Tags && m.Tags.length > 0 ? `<p class="movie-details">Tags: ${m.Tags.join(', ')}</p>` : ''}
-                        <span class="movie-type type-${(m.MediaType || 'digital').toLowerCase()}">${m.MediaType || 'Digital'}</span>
-                        ${m.Watched ? '<span style="color:#2ecc71;margin-left:5px;"><i class="fas fa-check-circle"></i> Assistido</span>' : ''}
-                        <div class="movie-actions">
-                            <button class="action-btn watched-btn"><i class="fas fa-eye${m.Watched ? '-slash' : ''}"></i> ${m.Watched ? 'Desmarcar' : 'Marcar como assistido'}</button>
-                            <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Remover</button>
-                        </div>
-                    </div>
-                `;
-                moviesContainer.appendChild(card);
-            });
         }
-    </script>
-</body>
-</html>
+        
+        if (target.classList.contains('watched-btn')) {
+            const movie = movies.find(m => m.id === movieId);
+            if (movie) {
+                await updateDoc(doc(db, `users/${uid}/movies/${movieId}`), { Watched: !movie.Watched });
+                loadMovies();
+            }
+        }
+    });
+
+    async function loadMovies() {
+        if (!auth.currentUser) return;
+        const uid = auth.currentUser.uid;
+        const querySnapshot = await getDocs(collection(db, `users/${uid}/movies`));
+        movies = [];
+        querySnapshot.forEach(doc => movies.push({ ...doc.data(), id: doc.id }));
+        renderMovies();
+    }
+
+    function renderMovies() {
+        moviesContainer.innerHTML = "";
+        let filtered = movies;
+        if (currentFilter !== "all") {
+            if (currentFilter === "watched") filtered = movies.filter(m => m.Watched);
+            else if (currentFilter === "favorite") filtered = movies.filter(m => m.Favorite);
+            else filtered = movies.filter(m => m.MediaType === currentFilter);
+        }
+        if (filtered.length === 0) {
+            moviesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-film"></i><h3>Nenhum filme</h3></div>`;
+            return;
+        }
+        filtered.forEach(m => {
+            const card = document.createElement("div");
+            card.className = "movie-card fade-in";
+            card.dataset.id = m.id;
+            card.innerHTML = `
+                <img src="${m.Poster || 'https://via.placeholder.com/300x450/2c3e50/ecf0f1?text=Sem+Imagem'}" class="movie-poster" alt="${m.Title}">
+                <div class="movie-info">
+                    <h3 class="movie-title">${m.Title}</h3>
+                    <p class="movie-year">${m.Year || ''}</p>
+                    <p class="movie-details">Gênero: ${m.Genre || 'N/A'}</p>
+                    <p class="movie-details">Diretor: $

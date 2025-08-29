@@ -1,423 +1,295 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full bg-gray-900">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minha Coleção de Filmes</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-    /* Seus estilos CSS, exatamente como você enviou */
-    :root {
-        --primary-color:#2c3e50;--secondary-color:#3498db;--accent-color:#e74c3c;
-        --light-color:#ecf0f1;--dark-color:#34495e;--success-color:#2ecc71;
-        --warning-color:#f39c12;--background-dark:#1a2530;--card-bg:#2c3e50;
-        --dvd-color:#9b59b6;--digital-color:#3498db;--vhs-color:#e67e22;
-        --telegram-color:#1da1f2;--watched-color:#2ecc71;
-    }
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
-    body{background:linear-gradient(135deg,var(--background-dark),var(--primary-color));color:white;min-height:100vh;padding:15px;}
-    .container{max-width:1200px;margin:0 auto;}
-    header{text-align:center;margin-bottom:20px;}
-    .app-title{font-size:2rem;font-weight:800;margin-bottom:5px;}
-    .app-title span{color:var(--accent-color);}
-    .app-subtitle{color:#bbb;margin-bottom:20px;}
-    .tabs{display:flex;flex-wrap:wrap;margin-bottom:15px;gap:8px;overflow-x:auto;}
-    .tab{padding:10px 15px;background:rgba(255,255,255,0.1);border-radius:8px;cursor:pointer;transition:all 0.3s;font-weight:500;white-space:nowrap;}
-    .tab:hover{background:rgba(255,255,255,0.2);}
-    .tab.active{background:var(--secondary-color);font-weight:600;}
-    .tab.dvd{border-left:4px solid var(--dvd-color);}
-    .tab.digital{border-left:4px solid var(--digital-color);}
-    .tab.vhs{border-left:4px solid var(--vhs-color);}
-    .tab.telegram{border-left:4px solid var(--telegram-color);}
-    .tab.watched{border-left:4px solid var(--watched-color);}
-    .tab.favorite{border-left:4px solid var(--accent-color);}
-    .movie-form{background:rgba(255,255,255,0.1);padding:15px;border-radius:10px;margin-bottom:20px;}
-    .form-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;}
-    .form-group{flex:1;min-width:150px;}
-    .form-group label{display:block;margin-bottom:5px;font-weight:500;}
-    .form-control{width:100%;padding:8px;border:none;border-radius:6px;background:rgba(255,255,255,0.9);}
-    .btn{padding:10px 15px;border:none;border-radius:6px;cursor:pointer;font-weight:600;transition:all 0.3s;}
-    .btn-primary{background:var(--secondary-color);color:white;}
-    .btn-success{background:var(--success-color);color:white;}
-    .btn-danger{background:var(--accent-color);color:white;}
-    .btn:hover{opacity:0.9;transform:translateY(-2px);}
-    .movies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:15px;}
-    .movie-card{background:var(--card-bg);border-radius:10px;overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,0.2);transition:transform 0.3s;}
-    .movie-card:hover{transform:translateY(-5px);}
-    .movie-poster{width:100%;height:300px;object-fit:cover;}
-    .movie-info{padding:10px;}
-    .movie-title{font-size:1rem;font-weight:700;margin-bottom:3px;}
-    .movie-year{color:#bbb;margin-bottom:5px;}
-    .movie-details{margin-bottom:5px;font-size:0.85rem;color:#ddd;}
-    .movie-type{display:inline-block;padding:3px 6px;border-radius:4px;font-size:0.75rem;font-weight:600;margin-top:3px;}
-    .type-dvd{background:var(--dvd-color);}
-    .type-digital{background:var(--digital-color);}
-    .type-vhs{background:var(--vhs-color);}
-    .type-telegram{background:var(--telegram-color);}
-    .movie-actions{display:flex;justify-content:space-between;margin-top:10px;}
-    .action-btn{padding:5px 8px;border:none;border-radius:4px;cursor:pointer;font-size:0.8rem;}
-    .delete-btn{background:var(--accent-color);color:white;}
-    .watched-btn{background:var(--watched-color);color:white;}
-    .favorite-btn{background:var(--secondary-color);color:white;}
-    .fade-in{animation:fadeIn 0.5s ease-out;}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-    .empty-state{text-align:center;padding:30px;color:#bbb;grid-column:1/-1;}
-    .empty-state i{font-size:2.5rem;margin-bottom:10px;color:#555;}
-    @media(max-width:768px){.form-row{flex-direction:column;}.movies-grid{grid-template-columns:1fr;}}
-    .login-screen {
-        display: none;
-        text-align: center;
-        margin-top: 50px;
-    }
-    .login-form {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        max-width: 300px;
-        margin: 20px auto;
-    }
-    .login-form input {
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Login e Registro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <script type="module">
+        // Importações do Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            onAuthStateChanged, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword,
+            signOut,
+            setLogLevel,
+            signInWithCustomToken,
+            signInAnonymously
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // --- Configuração do Firebase ---
+        // A configuração será injetada pela variável global __firebase_config se disponível.
+        // Se não, substitua o objeto abaixo pelas suas credenciais do Firebase.
+        const firebaseConfigFromEnv = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+
+        const firebaseConfig = firebaseConfigFromEnv || {
+            apiKey: "SUA_API_KEY",
+            authDomain: "SEU_AUTH_DOMAIN",
+            projectId: "SEU_PROJECT_ID",
+            storageBucket: "SEU_STORAGE_BUCKET",
+            messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+            appId: "SEU_APP_ID"
+        };
+        
+        // Inicializa o Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Habilita logs detalhados para ajudar na depuração
+        setLogLevel('debug');
+
+        // --- Seletores de Elementos do DOM ---
+        const loginView = document.getElementById('login-view');
+        const loggedInView = document.getElementById('logged-in-view');
+        
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        
+        const showRegisterLink = document.getElementById('show-register-link');
+        const showLoginLink = document.getElementById('show-login-link');
+        
+        const errorMessageDiv = document.getElementById('error-message');
+        const userEmailSpan = document.getElementById('user-email');
+        const logoutButton = document.getElementById('logout-button');
+
+        // --- Funções de Autenticação ---
+
+        /**
+         * Lida com o registro de um novo usuário.
+         * @param {Event} e - O evento de submissão do formulário.
+         */
+        const handleRegister = async (e) => {
+            e.preventDefault();
+            errorMessageDiv.textContent = ''; // Limpa erros anteriores
+            const email = registerForm.email.value;
+            const password = registerForm.password.value;
+
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                // O onAuthStateChanged vai lidar com a atualização da UI
+            } catch (error) {
+                console.error("Erro no registro:", error);
+                showError(error);
+            }
+        };
+
+        /**
+         * Lida com o login de um usuário existente.
+         * @param {Event} e - O evento de submissão do formulário.
+         */
+        const handleLogin = async (e) => {
+            e.preventDefault();
+            errorMessageDiv.textContent = ''; // Limpa erros anteriores
+            const email = loginForm.email.value;
+            const password = loginForm.password.value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // O onAuthStateChanged vai lidar com a atualização da UI
+            } catch (error) {
+                console.error("Erro no login:", error);
+                showError(error);
+            }
+        };
+
+        /**
+         * Lida com o logout do usuário.
+         */
+        const handleLogout = async () => {
+            try {
+                await signOut(auth);
+                // O onAuthStateChanged vai lidar com a atualização da UI
+            } catch (error) {
+                console.error("Erro no logout:", error);
+                showError(error);
+            }
+        };
+
+        // --- Lógica da UI ---
+
+        /**
+         * Exibe uma mensagem de erro na interface.
+         * @param {Error} error - O objeto de erro do Firebase.
+         */
+        const showError = (error) => {
+            let message = "Ocorreu um erro. Tente novamente.";
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    message = "Nenhum usuário encontrado com este e-mail.";
+                    break;
+                case 'auth/wrong-password':
+                    message = "Senha incorreta. Por favor, tente novamente.";
+                    break;
+                case 'auth/email-already-in-use':
+                    message = "Este e-mail já está em uso por outra conta.";
+                    break;
+                case 'auth/weak-password':
+                    message = "A senha é muito fraca. Use pelo menos 6 caracteres.";
+                    break;
+                case 'auth/invalid-email':
+                    message = "O formato do e-mail é inválido.";
+                    break;
+            }
+            errorMessageDiv.textContent = message;
+        };
+
+        // Alterna a visibilidade entre os formulários de login e registro
+        const toggleForms = (show) => {
+            if (show === 'register') {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+            } else {
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+            }
+            errorMessageDiv.textContent = ''; // Limpa erros ao alternar
+        };
+
+        // --- Ponto de Entrada e Event Listeners ---
+        
+        // Aguarda o DOM carregar completamente
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Observador do estado de autenticação
+            onAuthStateChanged(auth, user => {
+                if (user) {
+                    // Usuário está logado
+                    console.log("Usuário logado:", user.email);
+                    userEmailSpan.textContent = user.email;
+                    loggedInView.classList.remove('hidden');
+                    loginView.classList.add('hidden');
+                } else {
+                    // Usuário está deslogado
+                    console.log("Nenhum usuário logado.");
+                    loggedInView.classList.add('hidden');
+                    loginView.classList.remove('hidden');
+                    toggleForms('login'); // Mostra o form de login por padrão
+                }
+            });
+
+            // Adiciona os listeners aos formulários e links
+            loginForm.addEventListener('submit', handleLogin);
+            registerForm.addEventListener('submit', handleRegister);
+            logoutButton.addEventListener('click', handleLogout);
+
+            showRegisterLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleForms('register');
+            });
+            
+            showLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleForms('login');
+            });
+
+             // Tenta autenticar com o token inicial, se disponível.
+            const attemptInitialAuth = async () => {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        console.log("Tentando login com token customizado...");
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else if (!auth.currentUser) {
+                        console.log("Tentando login anônimo...");
+                        await signInAnonymously(auth);
+                    }
+                } catch (error) {
+                    console.error("Falha na autenticação inicial:", error);
+                    showError(error);
+                }
+            };
+            
+            attemptInitialAuth();
+
+        });
+
+    </script>
+    <style>
+        /* Estilo para garantir que o layout ocupe toda a altura */
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
-<body>
+<body class="h-full">
 
-<div class="container login-screen" id="login-screen" style="display: block;">
-    <h2>Acesse sua coleção</h2>
-    <form id="email-login-form" class="login-form">
-        <input type="email" id="email" placeholder="E-mail" required>
-        <input type="password" id="password" placeholder="Senha" required>
-        <button type="submit" class="btn btn-primary" id="login-button">Entrar</button>
-        <button type="button" class="btn btn-success" id="signup-button">Criar conta</button>
-    </form>
-    <button class="btn btn-primary" id="google-login-button">Entrar com Google</button>
-</div>
-
-<div class="container" id="app-screen" style="display: none;">
-    <header>
-        <h1 class="app-title">Minha <span>Coleção</span> de Filmes</h1>
-        <p class="app-subtitle">Organize seus filmes de forma simples</p>
-        <button class="btn btn-danger" id="logout-button">Sair</button>
-    </header>
-
-    <div class="movie-form">
-        <h3>Buscar e Adicionar</h3>
-        <div class="form-row">
-            <div class="form-group" style="flex: 2;">
-                <label for="movie-title-search">Título do Filme</label>
-                <input type="text" id="movie-title-search" class="form-control" placeholder="Digite o título do filme">
+    <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        
+        <!-- Visão de Login/Registro -->
+        <div id="login-view">
+            <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+                <svg class="mx-auto h-12 w-auto text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+                </svg>
+                <h2 class="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-white">Acesse sua conta</h2>
             </div>
-            <div class="form-group" style="flex: 1; align-self: flex-end;">
-                <button id="search-button" class="btn btn-primary" style="width: 100%;">Buscar</button>
+            
+            <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                <!-- Formulário de Login -->
+                <form id="login-form" class="space-y-6" action="#" method="POST">
+                    <div>
+                        <label for="login-email" class="block text-sm font-medium leading-6 text-white">E-mail</label>
+                        <div class="mt-2">
+                            <input id="login-email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="login-password" class="block text-sm font-medium leading-6 text-white">Senha</label>
+                        <div class="mt-2">
+                            <input id="login-password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Entrar</button>
+                    </div>
+                </form>
+
+                <!-- Formulário de Registro -->
+                <form id="register-form" class="space-y-6 hidden" action="#" method="POST">
+                     <div>
+                        <label for="register-email" class="block text-sm font-medium leading-6 text-white">E-mail</label>
+                        <div class="mt-2">
+                            <input id="register-email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="register-password" class="block text-sm font-medium leading-6 text-white">Senha (mínimo 6 caracteres)</label>
+                        <div class="mt-2">
+                            <input id="register-password" name="password" type="password" autocomplete="new-password" required class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Cadastrar</g>
+                    </div>
+                </form>
+
+                <!-- Mensagem de Erro -->
+                <div id="error-message" class="mt-4 text-center text-sm text-red-400 font-medium"></div>
+
+                <!-- Links para alternar formulários -->
+                <p class="mt-10 text-center text-sm text-gray-400">
+                    <a href="#" id="show-register-link" class="font-semibold leading-6 text-indigo-400 hover:text-indigo-300">Não tem uma conta? Registre-se</a>
+                    <a href="#" id="show-login-link" class="font-semibold leading-6 text-indigo-400 hover:text-indigo-300 hidden">Já tem uma conta? Entre</a>
+                </p>
             </div>
         </div>
-        <div id="movie-results" class="movies-grid">
+
+        <!-- Visão de Usuário Logado -->
+        <div id="logged-in-view" class="hidden text-center text-white">
+            <div class="sm:mx-auto sm:w-full sm:max-w-md bg-gray-800/50 p-8 rounded-lg shadow-lg ring-1 ring-white/10">
+                <svg class="mx-auto h-12 w-auto text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h2 class="mt-6 text-2xl font-bold leading-9 tracking-tight">Bem-vindo(a)!</h2>
+                <p class="mt-2 text-gray-300">Você está conectado como:</p>
+                <p id="user-email" class="mt-1 font-semibold text-indigo-400"></p>
+                <button id="logout-button" class="mt-8 flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">Sair</button>
             </div>
+        </div>
     </div>
-    
-    <hr>
 
-    <div class="movie-form">
-        <h3>Adicionar Manualmente</h3>
-        <form id="movie-form-manual">
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="movie-title">Título</label>
-                    <input type="text" id="movie-title" class="form-control" placeholder="Digite o título">
-                </div>
-                <div class="form-group">
-                    <label for="movie-year">Ano</label>
-                    <input type="number" id="movie-year" class="form-control" placeholder="Ano">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="movie-genre">Gênero</label>
-                    <input type="text" id="movie-genre" class="form-control" placeholder="Ex: Ação, Drama">
-                </div>
-                <div class="form-group">
-                    <label for="movie-director">Diretor</label>
-                    <input type="text" id="movie-director" class="form-control" placeholder="Nome do diretor">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="movie-type">Tipo de Mídia</label>
-                    <select id="movie-type" class="form-control">
-                        <option value="DVD">DVD</option>
-                        <option value="Digital">Digital</option>
-                        <option value="VHS">VHS</option>
-                        <option value="Telegram">Telegram</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="movie-rating">Nota Pessoal</label>
-                    <input type="number" id="movie-rating" class="form-control" min="1" max="10" placeholder="1 a 10">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="movie-tags">Tags (separadas por vírgula)</label>
-                    <input type="text" id="movie-tags" class="form-control" placeholder="Ex: clássico, favorito">
-                </div>
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="movie-watched"> Já assisti
-                    </label>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Adicionar Manualmente</button>
-        </form>
-    </div>
-    
-    <hr>
-
-    <div class="tabs">
-        <div class="tab all active" data-filter="all">Todos</div>
-        <div class="tab dvd" data-filter="DVD">DVD</div>
-        <div class="tab digital" data-filter="Digital">Digital</div>
-        <div class="tab vhs" data-filter="VHS">VHS</div>
-        <div class="tab telegram" data-filter="Telegram">Telegram</div>
-        <div class="tab watched" data-filter="watched">Assistidos</div>
-        <div class="tab favorite" data-filter="favorite">Favoritos</div>
-    </div>
-    <div class="movies-grid" id="movies-container"></div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-    import { getFirestore, enableIndexedDbPersistence, doc, setDoc, getDocs, collection, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyBu6FyItXddK1pghqaEURKaMiQTMQZlJks",
-        authDomain: "colecaodefilmes-dfa7a.firebaseapp.com",
-        projectId: "colecaodefilmes-dfa7a",
-        storageBucket: "colecaodefilmes-dfa7a.firebasestorage.app",
-        messagingSenderId: "495818238503",
-        appId: "1:495818238503:web:814178c233d5fb304a7c02"
-    };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    enableIndexedDbPersistence(db).catch(err => console.warn(err));
-
-    const OMDb_API_KEY = "6cbfb854";
-    let movies = [];
-    let currentFilter = "all";
-
-    const loginScreen = document.getElementById("login-screen");
-    const appScreen = document.getElementById("app-screen");
-    const emailLoginForm = document.getElementById("email-login-form");
-    const googleLoginButton = document.getElementById("google-login-button");
-    const logoutButton = document.getElementById("logout-button");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    
-    // Novos elementos da busca
-    const movieTitleSearch = document.getElementById("movie-title-search");
-    const searchButton = document.getElementById("search-button");
-    const movieResults = document.getElementById("movie-results");
-
-    // Seu formulário manual
-    const movieFormManual = document.getElementById("movie-form-manual");
-    const moviesContainer = document.getElementById("movies-container");
-    const tabs = document.querySelectorAll(".tab");
-
-    function showLoginScreen() {
-        loginScreen.style.display = "block";
-        appScreen.style.display = "none";
-    }
-    function showAppScreen() {
-        loginScreen.style.display = "none";
-        appScreen.style.display = "block";
-        loadMovies();
-    }
-    onAuthStateChanged(auth, user => {
-        if (user) {
-            showAppScreen();
-        } else {
-            showLoginScreen();
-        }
-    });
-
-    emailLoginForm.addEventListener('submit', async e => {
-        e.preventDefault();
-        const email = emailInput.value;
-        const password = passwordInput.value;
-        const submitterId = e.submitter.id;
-        try {
-            if (submitterId === 'login-button') await signInWithEmailAndPassword(auth, email, password);
-            else if (submitterId === 'signup-button') {
-                await createUserWithEmailAndPassword(auth, email, password);
-                alert("Conta criada com sucesso! Faça login agora.");
-            }
-        } catch (error) {
-            console.error("Erro na autenticação:", error.message);
-            alert("Erro: " + error.message);
-        }
-    });
-    googleLoginButton.addEventListener('click', async () => {
-        const provider = new GoogleAuthProvider();
-        try {
-            await signInWithPopup(auth, provider);
-        } catch (error) {
-            console.error("Erro no login com Google:", error.message);
-            alert("Erro: " + error.message);
-        }
-    });
-    logoutButton.addEventListener('click', async () => {
-        try { await signOut(auth); }
-        catch (error) { console.error("Erro no logout:", error.message); }
-    });
-
-    // Lógica de Busca (Corrigida e Reposicionada)
-    searchButton.addEventListener('click', async () => {
-        const movieTitle = movieTitleSearch.value;
-        if (!movieTitle) {
-            alert("Por favor, digite o título de um filme.");
-            return;
-        }
-        const url = `https://www.omdbapi.com/?s=${encodeURIComponent(movieTitle)}&apikey=${OMDb_API_KEY}`;
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            movieResults.innerHTML = '';
-            if (data.Response === "True") {
-                data.Search.forEach(movie => {
-                    const card = document.createElement('div');
-                    card.className = "movie-card fade-in";
-                    card.innerHTML = `
-                        <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/300x450/2c3e50/ecf0f1?text=Sem+Imagem'}" class="movie-poster" alt="${movie.Title}">
-                        <div class="movie-info">
-                            <h3 class="movie-title">${movie.Title}</h3>
-                            <p class="movie-year">${movie.Year || ''}</p>
-                            <button class="btn btn-primary add-to-collection" data-imdbid="${movie.imdbID}" data-title="${movie.Title}" data-year="${movie.Year}" data-poster="${movie.Poster}">Adicionar à Coleção</button>
-                        </div>
-                    `;
-                    movieResults.appendChild(card);
-                });
-            } else {
-                movieResults.innerHTML = `<p class="empty-state">Nenhum filme encontrado. Tente novamente.</p>`;
-            }
-        } catch (error) {
-            console.error("Erro ao buscar filme:", error);
-            movieResults.innerHTML = `<p class="empty-state">Erro ao buscar filme. Tente novamente mais tarde.</p>`;
-        }
-    });
-
-    // Adiciona o filme da busca à coleção
-    movieResults.addEventListener('click', async (e) => {
-        if (e.target.matches('.add-to-collection')) {
-            const button = e.target;
-            const movieId = button.dataset.imdbid;
-            const uid = auth.currentUser.uid;
-            if (!uid) { alert("Você precisa estar logado para adicionar filmes."); return; }
-            const movieData = {
-                Title: button.dataset.title,
-                Year: button.dataset.year,
-                Poster: button.dataset.poster,
-                Watched: false,
-                Favorite: false,
-                MediaType: 'Digital', // Padrão para filmes de busca
-                source: 'omdb'
-            };
-            await setDoc(doc(db, `users/${uid}/movies/${movieId}`), movieData);
-            alert(`"${movieData.Title}" foi adicionado à sua coleção!`);
-            loadMovies();
-        }
-    });
-
-    // Lógica de Adição Manual (Você já tinha feito, foi movida para um novo form)
-    movieFormManual.addEventListener("submit", async e => {
-        e.preventDefault();
-        const title = document.getElementById("movie-title").value.trim();
-        if (!title) { alert("O título é obrigatório!"); return; }
-        const uid = auth.currentUser.uid;
-        const movieId = `manual-${Date.now()}`;
-        const movieData = {
-            Title: title,
-            Year: document.getElementById("movie-year").value.trim() || null,
-            Genre: document.getElementById("movie-genre").value.trim() || null,
-            Director: document.getElementById("movie-director").value.trim() || null,
-            MediaType: document.getElementById("movie-type").value,
-            Rating: document.getElementById("movie-rating").value || null,
-            Tags: document.getElementById("movie-tags").value.split(",").map(t => t.trim()).filter(t => t),
-            Watched: document.getElementById("movie-watched").checked,
-            source: 'manual'
-        };
-        await setDoc(doc(db, `users/${uid}/movies/${movieId}`), movieData);
-        alert(`${title} adicionado à sua coleção!`);
-        loadMovies();
-        movieFormManual.reset();
-    });
-
-    // Eventos e Lógica da Coleção
-    tabs.forEach(tab => {
-        tab.addEventListener("click", () => {
-            tabs.forEach(t=>t.classList.remove("active"));
-            tab.classList.add("active");
-            currentFilter = tab.dataset.filter;
-            renderMovies();
-        });
-    });
-
-    document.body.addEventListener("click", async e => {
-        const target = e.target;
-        const card = target.closest('.movie-card');
-        if (!card) return;
-        const movieId = card.dataset.id;
-        const uid = auth.currentUser.uid;
-        if (!uid) return;
-        
-        if (target.classList.contains('delete-btn')) {
-            if (confirm("Tem certeza que deseja remover este filme?")) {
-                await deleteDoc(doc(db, `users/${uid}/movies/${movieId}`));
-                loadMovies();
-            }
-        }
-        
-        if (target.classList.contains('watched-btn')) {
-            const movie = movies.find(m => m.id === movieId);
-            if (movie) {
-                await updateDoc(doc(db, `users/${uid}/movies/${movieId}`), { Watched: !movie.Watched });
-                loadMovies();
-            }
-        }
-    });
-
-    async function loadMovies() {
-        if (!auth.currentUser) return;
-        const uid = auth.currentUser.uid;
-        const querySnapshot = await getDocs(collection(db, `users/${uid}/movies`));
-        movies = [];
-        querySnapshot.forEach(doc => movies.push({ ...doc.data(), id: doc.id }));
-        renderMovies();
-    }
-
-    function renderMovies() {
-        moviesContainer.innerHTML = "";
-        let filtered = movies;
-        if (currentFilter !== "all") {
-            if (currentFilter === "watched") filtered = movies.filter(m => m.Watched);
-            else if (currentFilter === "favorite") filtered = movies.filter(m => m.Favorite);
-            else filtered = movies.filter(m => m.MediaType === currentFilter);
-        }
-        if (filtered.length === 0) {
-            moviesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-film"></i><h3>Nenhum filme</h3></div>`;
-            return;
-        }
-        filtered.forEach(m => {
-            const card = document.createElement("div");
-            card.className = "movie-card fade-in";
-            card.dataset.id = m.id;
-            card.innerHTML = `
-                <img src="${m.Poster || 'https://via.placeholder.com/300x450/2c3e50/ecf0f1?text=Sem+Imagem'}" class="movie-poster" alt="${m.Title}">
-                <div class="movie-info">
-                    <h3 class="movie-title">${m.Title}</h3>
-                    <p class="movie-year">${m.Year || ''}</p>
-                    <p class="movie-details">Gênero: ${m.Genre || 'N/A'}</p>
-                    <p class="movie-details">Diretor: $
+</body>
+</html>

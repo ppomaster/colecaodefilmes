@@ -42,20 +42,12 @@
     </div>
 
     <script type="module">
-        // Importa as funções do Firebase que vamos usar
+        // Importa todas as funções necessárias do Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-        import { 
-            getAuth, 
-            onAuthStateChanged, 
-            GoogleAuthProvider, 
-            signInWithPopup,
-            signInWithEmailAndPassword,
-            createUserWithEmailAndPassword,
-            signOut
-        } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
         import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-        // SEU OBJETO DE CONFIGURAÇÃO DO FIREBASE (substitua por seus dados reais)
+        // SEU OBJETO DE CONFIGURAÇÃO DO FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyBu6FyItXddK1pghqaEURKaMiQTMQZlJks",
             authDomain: "colecaodefilmes-dfa7a.firebaseapp.com",
@@ -64,21 +56,18 @@
             messagingSenderId: "495818238503",
             appId: "1:495818238503:web:814178c233d5fb304a7c02"
         };
-
-        // Inicializa o Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Habilita a persistência local para usar offline
-        enableIndexedDbPersistence(db)
-          .catch((err) => {
-            if (err.code === 'failed-precondition') {
-              console.warn("Múltiplas abas não são suportadas para persistência offline.");
-            } else if (err.code === 'unimplemented') {
-              console.warn("O navegador atual não suporta persistência offline.");
-            }
-          });
+        // Chave da API do OMDb
+        const OMDb_API_KEY = "6cbfb854";
+
+        // Habilita persistência offline
+        enableIndexedDbPersistence(db).catch(err => {
+            if (err.code === 'failed-precondition') console.warn("Múltiplas abas não suportadas para persistência offline.");
+            else if (err.code === 'unimplemented') console.warn("O navegador atual não suporta persistência offline.");
+        });
 
         // Obtém referências aos elementos HTML
         const loginScreen = document.getElementById('login-screen');
@@ -88,26 +77,17 @@
         const logoutButton = document.getElementById('logout-button');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
-
-        // Novas referências de elementos da interface do app
         const movieTitleInput = document.getElementById('movie-title-input');
         const searchButton = document.getElementById('search-button');
         const movieResults = document.getElementById('movie-results');
         const movieCollection = document.getElementById('movie-collection');
         
         // Funções para alternar as telas
-        function showLoginScreen() {
-            loginScreen.style.display = 'block';
-            appScreen.style.display = 'none';
-        }
-
-        function showAppScreen() {
-            loginScreen.style.display = 'none';
-            appScreen.style.display = 'block';
-        }
+        const showLoginScreen = () => { loginScreen.style.display = 'block'; appScreen.style.display = 'none'; };
+        const showAppScreen = () => { loginScreen.style.display = 'none'; appScreen.style.display = 'block'; };
 
         // Observador de autenticação
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, user => {
             if (user) {
                 console.log("Usuário logado:", user.uid);
                 showAppScreen();
@@ -117,17 +97,15 @@
             }
         });
 
-        // Lógica de Login com Email/Senha e Criação de Conta
-        emailLoginForm.addEventListener('submit', async (e) => {
+        // Lógica de Login/Criação de Conta com Email/Senha
+        emailLoginForm.addEventListener('submit', async e => {
             e.preventDefault();
             const email = emailInput.value;
             const password = passwordInput.value;
             const submitterId = e.submitter.id;
-
             try {
-                if (submitterId === 'login-button') {
-                    await signInWithEmailAndPassword(auth, email, password);
-                } else if (submitterId === 'signup-button') {
+                if (submitterId === 'login-button') await signInWithEmailAndPassword(auth, email, password);
+                else if (submitterId === 'signup-button') {
                     await createUserWithEmailAndPassword(auth, email, password);
                     alert("Conta criada com sucesso! Você pode fazer login agora.");
                 }
@@ -150,31 +128,22 @@
 
         // Lógica de Logout
         logoutButton.addEventListener('click', async () => {
-            try {
-                await signOut(auth);
-            } catch (error) {
-                console.error("Erro no logout:", error.message);
-            }
+            try { await signOut(auth); }
+            catch (error) { console.error("Erro no logout:", error.message); }
         });
 
-        // ** Lógica de Busca de Filmes (NOVA SEÇÃO) **
-        const OMDb_API_KEY = "6cbfb854";
-
+        // Lógica de Busca de Filmes
         searchButton.addEventListener('click', async () => {
             const movieTitle = movieTitleInput.value;
             if (!movieTitle) {
                 alert("Por favor, digite o título de um filme.");
                 return;
             }
-
             const url = `https://www.omdbapi.com/?s=${encodeURIComponent(movieTitle)}&apikey=${OMDb_API_KEY}`;
-            
             try {
                 const response = await fetch(url);
                 const data = await response.json();
-
                 movieResults.innerHTML = '';
-                
                 if (data.Response === "True") {
                     data.Search.forEach(movie => {
                         const card = document.createElement('div');
@@ -188,7 +157,6 @@
                 } else {
                     movieResults.innerHTML = `<p>Nenhum filme encontrado. Tente novamente.</p>`;
                 }
-                
             } catch (error) {
                 console.error("Erro ao buscar filme:", error);
                 movieResults.innerHTML = `<p>Erro ao buscar filme. Tente novamente mais tarde.</p>`;

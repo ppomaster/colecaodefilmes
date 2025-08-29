@@ -19,8 +19,26 @@
     </div>
 
     <div id="app-screen" style="display: none;">
-        <p>Você está logado! Bem-vindo.</p>
-        <button id="logout-button">Sair</button>
+        <header>
+            <button id="logout-button">Sair</button>
+        </header>
+
+        <main>
+            <h2>Adicionar Filme</h2>
+            <div id="search-section">
+                <input type="text" id="movie-title-input" placeholder="Digite o título do filme">
+                <button id="search-button">Buscar</button>
+            </div>
+            
+            <div id="movie-results">
+                </div>
+            
+            <hr>
+            
+            <h2>Minha Coleção</h2>
+            <div id="movie-collection">
+                </div>
+        </main>
     </div>
 
     <script type="module">
@@ -35,7 +53,7 @@
             createUserWithEmailAndPassword,
             signOut
         } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+        import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
         // SEU OBJETO DE CONFIGURAÇÃO DO FIREBASE (substitua por seus dados reais)
         const firebaseConfig = {
@@ -52,6 +70,16 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Habilita a persistência local para usar offline
+        enableIndexedDbPersistence(db)
+          .catch((err) => {
+            if (err.code === 'failed-precondition') {
+              console.warn("Múltiplas abas não são suportadas para persistência offline.");
+            } else if (err.code === 'unimplemented') {
+              console.warn("O navegador atual não suporta persistência offline.");
+            }
+          });
+
         // Obtém referências aos elementos HTML
         const loginScreen = document.getElementById('login-screen');
         const appScreen = document.getElementById('app-screen');
@@ -61,6 +89,12 @@
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
 
+        // Novas referências de elementos da interface do app
+        const movieTitleInput = document.getElementById('movie-title-input');
+        const searchButton = document.getElementById('search-button');
+        const movieResults = document.getElementById('movie-results');
+        const movieCollection = document.getElementById('movie-collection');
+        
         // Funções para alternar as telas
         function showLoginScreen() {
             loginScreen.style.display = 'block';
@@ -72,10 +106,10 @@
             appScreen.style.display = 'block';
         }
 
-        // Observador de autenticação para verificar se o usuário está logado
+        // Observador de autenticação
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                console.log("Usuário logado:", user);
+                console.log("Usuário logado:", user.uid);
                 showAppScreen();
             } else {
                 console.log("Nenhum usuário logado.");
@@ -122,6 +156,44 @@
                 console.error("Erro no logout:", error.message);
             }
         });
+
+        // ** Lógica de Busca de Filmes (NOVA SEÇÃO) **
+        const OMDb_API_KEY = "6cbfb854";
+
+        searchButton.addEventListener('click', async () => {
+            const movieTitle = movieTitleInput.value;
+            if (!movieTitle) {
+                alert("Por favor, digite o título de um filme.");
+                return;
+            }
+
+            const url = `https://www.omdbapi.com/?s=${encodeURIComponent(movieTitle)}&apikey=${OMDb_API_KEY}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                movieResults.innerHTML = '';
+                
+                if (data.Response === "True") {
+                    data.Search.forEach(movie => {
+                        const card = document.createElement('div');
+                        card.innerHTML = `
+                            <h4>${movie.Title} (${movie.Year})</h4>
+                            <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/150'}" alt="${movie.Title}" style="width:150px;">
+                            <button class="add-to-collection" data-imdbid="${movie.imdbID}" data-title="${movie.Title}" data-year="${movie.Year}" data-poster="${movie.Poster}">Adicionar à Coleção</button>
+                        `;
+                        movieResults.appendChild(card);
+                    });
+                } else {
+                    movieResults.innerHTML = `<p>Nenhum filme encontrado. Tente novamente.</p>`;
+                }
+                
+            } catch (error) {
+                console.error("Erro ao buscar filme:", error);
+                movieResults.innerHTML = `<p>Erro ao buscar filme. Tente novamente mais tarde.</p>`;
+            }
+        });
     </script>
 </body>
-  </html>
+</html>

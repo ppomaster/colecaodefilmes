@@ -171,191 +171,201 @@ header{text-align:center;margin-bottom:20px;}
 </div>
 
 <script type="module">
-// ----------------- Firebase -----------------
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { getFirestore, enableIndexedDbPersistence, doc, setDoc, getDocs, collection, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+        // Importa todas as funções necessárias do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+        import { getFirestore, enableIndexedDbPersistence, doc, setDoc, getDocs, collection, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-const firebaseConfig = { /* SUBSTITUA AQUI */ };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-enableIndexedDbPersistence(db).catch(err => console.warn(err));
+        // SEU OBJETO DE CONFIGURAÇÃO DO FIREBASE (VERIFIQUE AQUI)
+        const firebaseConfig = {
+            apiKey: "AIzaSyBu6FyItXddK1pghqaEURKaMiQTMQZlJks",
+            authDomain: "colecaodefilmes-dfa7a.firebaseapp.com",
+            projectId: "colecaodefilmes-dfa7a",
+            storageBucket: "colecaodefilmes-dfa7a.firebasestorage.app",
+            messagingSenderId: "495818238503",
+            appId: "1:495818238503:web:814178c233d5fb304a7c02"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-// ----------------- Estado -----------------
-let movies = [];
-let currentFilter = "all";
+        // Chave da API do OMDb
+        const OMDb_API_KEY = "6cbfb854";
 
-// ----------------- DOM -----------------
-const loginScreen = document.getElementById("login-screen");
-const appScreen = document.getElementById("app-screen");
-const emailLoginForm = document.getElementById("email-login-form");
-const googleLoginButton = document.getElementById("google-login-button");
-const logoutButton = document.getElementById("logout-button");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const movieForm = document.getElementById("movie-form");
-const moviesContainer = document.getElementById("movies-container");
-const tabs = document.querySelectorAll(".tab");
+        // Habilita persistência offline
+        enableIndexedDbPersistence(db).catch(err => {
+            if (err.code === 'failed-precondition') console.warn("Múltiplas abas não suportadas para persistência offline.");
+            else if (err.code === 'unimplemented') console.warn("O navegador atual não suporta persistência offline.");
+        });
 
-// ----------------- Funções -----------------
-function showLoginScreen() {
-    loginScreen.style.display = "block";
-    appScreen.style.display = "none";
-}
-function showAppScreen() {
-    loginScreen.style.display = "none";
-    appScreen.style.display = "block";
-    loadMovies();
-}
+        // Obtém referências aos elementos HTML
+        const loginScreen = document.getElementById("login-screen");
+        const appScreen = document.getElementById("app-screen");
+        const emailLoginForm = document.getElementById("email-login-form");
+        const googleLoginButton = document.getElementById("google-login-button");
+        const logoutButton = document.getElementById("logout-button");
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const movieForm = document.getElementById("movie-form");
+        const moviesContainer = document.getElementById("movies-container");
+        const tabs = document.querySelectorAll(".tab");
 
-// ----------------- Observador de Autenticação -----------------
-onAuthStateChanged(auth, user => {
-    if (user) {
-        showAppScreen();
-    } else {
-        showLoginScreen();
-    }
-});
-
-// ----------------- Eventos de Autenticação -----------------
-emailLoginForm.addEventListener('submit', async e => {
-    e.preventDefault();
-    const email = emailInput.value;
-    const password = passwordInput.value;
-    const submitterId = e.submitter.id;
-    try {
-        if (submitterId === 'login-button') await signInWithEmailAndPassword(auth, email, password);
-        else if (submitterId === 'signup-button') {
-            await createUserWithEmailAndPassword(auth, email, password);
-            alert("Conta criada com sucesso! Faça login agora.");
+        // Funções para alternar as telas
+        function showLoginScreen() {
+            loginScreen.style.display = "block";
+            appScreen.style.display = "none";
         }
-    } catch (error) {
-        console.error("Erro na autenticação:", error.message);
-        alert("Erro: " + error.message);
-    }
-});
-googleLoginButton.addEventListener('click', async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-        await signInWithPopup(auth, provider);
-    } catch (error) {
-        console.error("Erro no login com Google:", error.message);
-        alert("Erro: " + error.message);
-    }
-});
-logoutButton.addEventListener('click', async () => {
-    try { await signOut(auth); }
-    catch (error) { console.error("Erro no logout:", error.message); }
-});
-
-// ----------------- Eventos do App -----------------
-tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-        tabs.forEach(t=>t.classList.remove("active"));
-        tab.classList.add("active");
-        currentFilter = tab.dataset.filter;
-        renderMovies();
-    });
-});
-
-movieForm.addEventListener("submit", async e => {
-    e.preventDefault();
-    const title = document.getElementById("movie-title").value.trim();
-    if (!title) { alert("O título é obrigatório!"); return; }
-    
-    const uid = auth.currentUser.uid;
-    const movieId = `manual-${Date.now()}`;
-    const movieData = {
-        Title: title,
-        Year: document.getElementById("movie-year").value.trim() || null,
-        Genre: document.getElementById("movie-genre").value.trim() || null,
-        Director: document.getElementById("movie-director").value.trim() || null,
-        MediaType: document.getElementById("movie-type").value,
-        Rating: document.getElementById("movie-rating").value || null,
-        Tags: document.getElementById("movie-tags").value.split(",").map(t => t.trim()).filter(t => t),
-        Watched: document.getElementById("movie-watched").checked,
-    };
-    await setDoc(doc(db, `users/${uid}/movies/${movieId}`), movieData);
-    alert(`${title} adicionado à sua coleção!`);
-    loadMovies();
-    movieForm.reset();
-});
-
-// Usando delegação de eventos para botões dinâmicos
-moviesContainer.addEventListener("click", async e => {
-    const target = e.target;
-    const card = target.closest('.movie-card');
-    if (!card) return;
-    const movieId = card.dataset.id;
-    const uid = auth.currentUser.uid;
-    
-    if (target.classList.contains('delete-btn')) {
-        if (confirm("Tem certeza que deseja remover este filme?")) {
-            await deleteDoc(doc(db, `users/${uid}/movies/${movieId}`));
+        function showAppScreen() {
+            loginScreen.style.display = "none";
+            appScreen.style.display = "block";
             loadMovies();
         }
-    }
-    
-    if (target.classList.contains('watched-btn')) {
-        const movie = movies.find(m => m.id === movieId);
-        if (movie) {
-            await updateDoc(doc(db, `users/${uid}/movies/${movieId}`), {
-                Watched: !movie.Watched
+
+        // Observador de Autenticação
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                showAppScreen();
+            } else {
+                showLoginScreen();
+            }
+        });
+
+        // Eventos de Autenticação
+        emailLoginForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            const email = emailInput.value;
+            const password = passwordInput.value;
+            const submitterId = e.submitter.id;
+            try {
+                if (submitterId === 'login-button') await signInWithEmailAndPassword(auth, email, password);
+                else if (submitterId === 'signup-button') {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    alert("Conta criada com sucesso! Faça login agora.");
+                }
+            } catch (error) {
+                console.error("Erro na autenticação:", error.message);
+                alert("Erro: " + error.message);
+            }
+        });
+        googleLoginButton.addEventListener('click', async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Erro no login com Google:", error.message);
+                alert("Erro: " + error.message);
+            }
+        });
+        logoutButton.addEventListener('click', async () => {
+            try { await signOut(auth); }
+            catch (error) { console.error("Erro no logout:", error.message); }
+        });
+
+        // Eventos do App
+        tabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                tabs.forEach(t=>t.classList.remove("active"));
+                tab.classList.add("active");
+                currentFilter = tab.dataset.filter;
+                renderMovies();
             });
+        });
+
+        movieForm.addEventListener("submit", async e => {
+            e.preventDefault();
+            const title = document.getElementById("movie-title").value.trim();
+            if (!title) { alert("O título é obrigatório!"); return; }
+            
+            const uid = auth.currentUser.uid;
+            const movieId = `manual-${Date.now()}`;
+            const movieData = {
+                Title: title,
+                Year: document.getElementById("movie-year").value.trim() || null,
+                Genre: document.getElementById("movie-genre").value.trim() || null,
+                Director: document.getElementById("movie-director").value.trim() || null,
+                MediaType: document.getElementById("movie-type").value,
+                Rating: document.getElementById("movie-rating").value || null,
+                Tags: document.getElementById("movie-tags").value.split(",").map(t => t.trim()).filter(t => t),
+                Watched: document.getElementById("movie-watched").checked,
+            };
+            await setDoc(doc(db, `users/${uid}/movies/${movieId}`), movieData);
+            alert(`${title} adicionado à sua coleção!`);
             loadMovies();
+            movieForm.reset();
+        });
+
+        // Usando delegação de eventos para botões dinâmicos
+        document.body.addEventListener("click", async e => {
+            const target = e.target;
+            const card = target.closest('.movie-card');
+            if (!card) return;
+            const movieId = card.dataset.id;
+            const uid = auth.currentUser.uid;
+            
+            if (target.classList.contains('delete-btn')) {
+                if (confirm("Tem certeza que deseja remover este filme?")) {
+                    await deleteDoc(doc(db, `users/${uid}/movies/${movieId}`));
+                    loadMovies();
+                }
+            }
+            
+            if (target.classList.contains('watched-btn')) {
+                const movie = movies.find(m => m.id === movieId);
+                if (movie) {
+                    await updateDoc(doc(db, `users/${uid}/movies/${movieId}`), {
+                        Watched: !movie.Watched
+                    });
+                    loadMovies();
+                }
+            }
+        });
+
+        // Renderização e Busca
+        async function loadMovies() {
+            if (!auth.currentUser) return;
+            const uid = auth.currentUser.uid;
+            const querySnapshot = await getDocs(collection(db, `users/${uid}/movies`));
+            movies = [];
+            querySnapshot.forEach(doc => movies.push({ ...doc.data(), id: doc.id }));
+            renderMovies();
         }
-    }
-});
 
-// ----------------- Renderização e Busca -----------------
-async function loadMovies() {
-    if (!auth.currentUser) return;
-    const uid = auth.currentUser.uid;
-    const querySnapshot = await getDocs(collection(db, `users/${uid}/movies`));
-    movies = [];
-    querySnapshot.forEach(doc => movies.push({ ...doc.data(), id: doc.id }));
-    renderMovies();
-}
-
-function renderMovies() {
-    moviesContainer.innerHTML = "";
-    let filtered = movies;
-    if (currentFilter !== "all") {
-        if (currentFilter === "watched") filtered = movies.filter(m => m.Watched);
-        // O seu código original não tinha a lógica para o filtro de favoritos
-        // Mas o HTML tem. Seus filmes precisam ter um campo "Favorite: true" para que funcione.
-        else if (currentFilter === "favorite") filtered = movies.filter(m => m.Favorite);
-        else filtered = movies.filter(m => m.MediaType === currentFilter);
-    }
-    if (filtered.length === 0) {
-        moviesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-film"></i><h3>Nenhum filme</h3></div>`;
-        return;
-    }
-    filtered.forEach(m => {
-        const card = document.createElement("div");
-        card.className = "movie-card fade-in";
-        card.dataset.id = m.id;
-        card.innerHTML = `
-            <img src="${m.Poster || 'https://via.placeholder.com/300x450/2c3e50/ecf0f1?text=Sem+Imagem'}" class="movie-poster" alt="${m.Title}">
-            <div class="movie-info">
-                <h3 class="movie-title">${m.Title}</h3>
-                <p class="movie-year">${m.Year || ''}</p>
-                <p class="movie-details">Gênero: ${m.Genre || 'N/A'}</p>
-                <p class="movie-details">Diretor: ${m.Director || 'N/A'}</p>
-                ${m.Rating ? `<p class="movie-details">Nota: ${m.Rating}/10</p>` : ''}
-                ${m.Tags && m.Tags.length > 0 ? `<p class="movie-details">Tags: ${m.Tags.join(', ')}</p>` : ''}
-                <span class="movie-type type-${(m.MediaType || 'digital').toLowerCase()}">${m.MediaType || 'Digital'}</span>
-                ${m.Watched ? '<span style="color:#2ecc71;margin-left:5px;"><i class="fas fa-check-circle"></i> Assistido</span>' : ''}
-                <div class="movie-actions">
-                    <button class="action-btn watched-btn"><i class="fas fa-eye${m.Watched ? '-slash' : ''}"></i> ${m.Watched ? 'Desmarcar' : 'Marcar como assistido'}</button>
-                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Remover</button>
-                </div>
-            </div>
-        `;
-        moviesContainer.appendChild(card);
-    });
-}
-</script>
+        function renderMovies() {
+            moviesContainer.innerHTML = "";
+            let filtered = movies;
+            if (currentFilter !== "all") {
+                if (currentFilter === "watched") filtered = movies.filter(m => m.Watched);
+                else if (currentFilter === "favorite") filtered = movies.filter(m => m.Favorite);
+                else filtered = movies.filter(m => m.MediaType === currentFilter);
+            }
+            if (filtered.length === 0) {
+                moviesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-film"></i><h3>Nenhum filme</h3></div>`;
+                return;
+            }
+            filtered.forEach(m => {
+                const card = document.createElement("div");
+                card.className = "movie-card fade-in";
+                card.dataset.id = m.id;
+                card.innerHTML = `
+                    <img src="${m.Poster || 'https://via.placeholder.com/300x450/2c3e50/ecf0f1?text=Sem+Imagem'}" class="movie-poster" alt="${m.Title}">
+                    <div class="movie-info">
+                        <h3 class="movie-title">${m.Title}</h3>
+                        <p class="movie-year">${m.Year || ''}</p>
+                        <p class="movie-details">Gênero: ${m.Genre || 'N/A'}</p>
+                        <p class="movie-details">Diretor: ${m.Director || 'N/A'}</p>
+                        ${m.Rating ? `<p class="movie-details">Nota: ${m.Rating}/10</p>` : ''}
+                        ${m.Tags && m.Tags.length > 0 ? `<p class="movie-details">Tags: ${m.Tags.join(', ')}</p>` : ''}
+                        <span class="movie-type type-${(m.MediaType || 'digital').toLowerCase()}">${m.MediaType || 'Digital'}</span>
+                        ${m.Watched ? '<span style="color:#2ecc71;margin-left:5px;"><i class="fas fa-check-circle"></i> Assistido</span>' : ''}
+                        <div class="movie-actions">
+                            <button class="action-btn watched-btn"><i class="fas fa-eye${m.Watched ? '-slash' : ''}"></i> ${m.Watched ? 'Desmarcar' : 'Marcar como assistido'}</button>
+                            <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Remover</button>
+                        </div>
+                    </div>
+                `;
+                moviesContainer.appendChild(card);
+            });
+        }
+    </script>
 </body>
 </html>

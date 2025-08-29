@@ -63,91 +63,120 @@ header{text-align:center;margin-bottom:20px;}
 .empty-state{text-align:center;padding:30px;color:#bbb;grid-column:1/-1;}
 .empty-state i{font-size:2.5rem;margin-bottom:10px;color:#555;}
 @media(max-width:768px){.form-row{flex-direction:column;}.movies-grid{grid-template-columns:1fr;}}
+
+/* Estilos da tela de login */
+.login-screen {
+    display: none;
+    text-align: center;
+    margin-top: 50px;
+}
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 300px;
+    margin: 20px auto;
+}
+.login-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
 </style>
 </head>
 <body>
-<div class="container">
-<header>
-<h1 class="app-title">Minha <span>Coleção</span> de Filmes</h1>
-<p class="app-subtitle">Organize seus filmes de forma simples</p>
-</header>
 
-<!-- Abas -->
-<div class="tabs">
-<div class="tab all active" data-filter="all">Todos</div>
-<div class="tab dvd" data-filter="DVD">DVD</div>
-<div class="tab digital" data-filter="Digital">Digital</div>
-<div class="tab vhs" data-filter="VHS">VHS</div>
-<div class="tab telegram" data-filter="Telegram">Telegram</div>
-<div class="tab watched" data-filter="watched">Assistidos</div>
-<div class="tab favorite" data-filter="favorite">Favoritos</div>
+<div class="container login-screen" id="login-screen" style="display: block;">
+    <h2>Acesse sua coleção</h2>
+    <form id="email-login-form" class="login-form">
+        <input type="email" id="email" placeholder="E-mail" required>
+        <input type="password" id="password" placeholder="Senha" required>
+        <button type="submit" class="btn btn-primary" id="login-button">Entrar</button>
+        <button type="button" class="btn btn-success" id="signup-button">Criar conta</button>
+    </form>
+    <button class="btn btn-primary" id="google-login-button">Entrar com Google</button>
 </div>
 
-<!-- Formulário -->
-<div class="movie-form">
-<h3>Adicionar/Editar Filme</h3>
-<form id="movie-form">
-<div class="form-row">
-<div class="form-group">
-<label for="movie-title">Título</label>
-<input type="text" id="movie-title" class="form-control" placeholder="Digite o título">
-</div>
-<div class="form-group">
-<label for="movie-year">Ano</label>
-<input type="number" id="movie-year" class="form-control" placeholder="Ano">
-</div>
-</div>
-<div class="form-row">
-<div class="form-group">
-<label for="movie-genre">Gênero</label>
-<input type="text" id="movie-genre" class="form-control" placeholder="Ex: Ação, Drama">
-</div>
-<div class="form-group">
-<label for="movie-director">Diretor</label>
-<input type="text" id="movie-director" class="form-control" placeholder="Nome do diretor">
-</div>
-</div>
-<div class="form-row">
-<div class="form-group">
-<label for="movie-type">Tipo de Mídia</label>
-<select id="movie-type" class="form-control">
-<option value="DVD">DVD</option>
-<option value="Digital">Digital</option>
-<option value="VHS">VHS</option>
-<option value="Telegram">Telegram</option>
-</select>
-</div>
-<div class="form-group">
-<label for="movie-rating">Nota Pessoal</label>
-<input type="number" id="movie-rating" class="form-control" min="1" max="10" placeholder="1 a 10">
-</div>
-</div>
-<div class="form-row">
-<div class="form-group">
-<label for="movie-tags">Tags (separadas por vírgula)</label>
-<input type="text" id="movie-tags" class="form-control" placeholder="Ex: clássico, favorito">
-</div>
-<div class="form-group">
-<label>
-<input type="checkbox" id="movie-watched"> Já assisti
-</label>
-</div>
-</div>
-<button type="submit" class="btn btn-primary">Adicionar / Atualizar</button>
-</form>
-</div>
+<div class="container" id="app-screen" style="display: none;">
+    <header>
+        <h1 class="app-title">Minha <span>Coleção</span> de Filmes</h1>
+        <p class="app-subtitle">Organize seus filmes de forma simples</p>
+        <button class="btn btn-danger" id="logout-button">Sair</button>
+    </header>
 
-<!-- Grid -->
-<div class="movies-grid" id="movies-container"></div>
+    <div class="tabs">
+        <div class="tab all active" data-filter="all">Todos</div>
+        <div class="tab dvd" data-filter="DVD">DVD</div>
+        <div class="tab digital" data-filter="Digital">Digital</div>
+        <div class="tab vhs" data-filter="VHS">VHS</div>
+        <div class="tab telegram" data-filter="Telegram">Telegram</div>
+        <div class="tab watched" data-filter="watched">Assistidos</div>
+        <div class="tab favorite" data-filter="favorite">Favoritos</div>
+    </div>
+
+    <div class="movie-form">
+        <h3>Adicionar/Editar Filme</h3>
+        <form id="movie-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="movie-title">Título</label>
+                    <input type="text" id="movie-title" class="form-control" placeholder="Digite o título">
+                </div>
+                <div class="form-group">
+                    <label for="movie-year">Ano</label>
+                    <input type="number" id="movie-year" class="form-control" placeholder="Ano">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="movie-genre">Gênero</label>
+                    <input type="text" id="movie-genre" class="form-control" placeholder="Ex: Ação, Drama">
+                </div>
+                <div class="form-group">
+                    <label for="movie-director">Diretor</label>
+                    <input type="text" id="movie-director" class="form-control" placeholder="Nome do diretor">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="movie-type">Tipo de Mídia</label>
+                    <select id="movie-type" class="form-control">
+                        <option value="DVD">DVD</option>
+                        <option value="Digital">Digital</option>
+                        <option value="VHS">VHS</option>
+                        <option value="Telegram">Telegram</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="movie-rating">Nota Pessoal</label>
+                    <input type="number" id="movie-rating" class="form-control" min="1" max="10" placeholder="1 a 10">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="movie-tags">Tags (separadas por vírgula)</label>
+                    <input type="text" id="movie-tags" class="form-control" placeholder="Ex: clássico, favorito">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="movie-watched"> Já assisti
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Adicionar / Atualizar</button>
+        </form>
+    </div>
+
+    <div class="movies-grid" id="movies-container"></div>
 </div>
 
 <script type="module">
 // ----------------- Firebase -----------------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { getFirestore, enableIndexedDbPersistence, doc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { getFirestore, enableIndexedDbPersistence, doc, setDoc, getDocs, collection, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-const firebaseConfig = { /* SUA CONFIGURAÇÃO AQUI */ };
+const firebaseConfig = { /* SUBSTITUA AQUI */ };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -158,99 +187,174 @@ let movies = [];
 let currentFilter = "all";
 
 // ----------------- DOM -----------------
+const loginScreen = document.getElementById("login-screen");
+const appScreen = document.getElementById("app-screen");
+const emailLoginForm = document.getElementById("email-login-form");
+const googleLoginButton = document.getElementById("google-login-button");
+const logoutButton = document.getElementById("logout-button");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 const movieForm = document.getElementById("movie-form");
 const moviesContainer = document.getElementById("movies-container");
 const tabs = document.querySelectorAll(".tab");
 
-// ----------------- Eventos -----------------
-tabs.forEach(tab => {
-tab.addEventListener("click", () => {
-tabs.forEach(t=>t.classList.remove("active"));
-tab.classList.add("active");
-currentFilter = tab.dataset.filter;
-renderMovies();
-});
-
-});
-
-movieForm.addEventListener("submit", async e=>{
-e.preventDefault();
-const title=document.getElementById("movie-title").value.trim();
-const year=document.getElementById("movie-year").value.trim();
-if(!title){alert("Digite ao menos o título!");return;}
-const genre=document.getElementById("movie-genre").value.trim();
-const director=document.getElementById("movie-director").value.trim();
-const type=document.getElementById("movie-type").value;
-const rating=document.getElementById("movie-rating").value;
-const tags=document.getElementById("movie-tags").value.split(",").map(t=>t.trim()).filter(t=>t);
-const watched=document.getElementById("movie-watched").checked;
-
-const movieId=Date.now();
-const uid=auth.currentUser.uid;
-const movieData={Title:title,Year:year||null,Genre:genre||null,Director:director||null,MediaType:type,Rating:rating||null,Tags:tags,Watched:watched};
-
-await setDoc(doc(db, `users/${uid}/movies/${movieId}`), movieData);
-alert(`${title} adicionado à sua coleção!`);
-loadMovies();
-movieForm.reset();
-});
-
-// ----------------- Render -----------------
-async function loadMovies(){
-const uid=auth.currentUser.uid;
-const querySnapshot=await getDocs(collection(db, `users/${uid}/movies`));
-movies=[];
-querySnapshot.forEach(doc=>movies.push({...doc.data(),id:doc.id}));
-renderMovies();
-}
-
-function renderMovies(){
-moviesContainer.innerHTML="";
-let filtered=movies;
-if(currentFilter!=="all"){
-if(currentFilter==="watched") filtered=movies.filter(m=>m.Watched);
-else if(currentFilter==="favorite") filtered=movies.filter(m=>m.Favorite);
-else filtered=movies.filter(m=>m.MediaType===currentFilter);
-}
-if(filtered.length===0){
-moviesContainer.innerHTML=`<div class="empty-state"><i class="fas fa-film"></i><h3>Nenhum filme</h3></div>`;
-return;
-}
-filtered.forEach(m=>{
-const card=document.createElement("div");
-card.className="movie-card fade-in";
-card.innerHTML=`
-<img src="${m.Poster||'https://via.placeholder.com/300x450/2c3e50/ecf0f1?text=Sem+Imagem'}" class="movie-poster" alt="${m.Title}">
-<div class="movie-info">
-<h3 class="movie-title">${m.Title}</h3>
-<p class="movie-year">${m.Year||''}</p>
-<p class="movie-details">${m.Genre||''}</p>
-<p class="movie-details">${m.Director||''}</p>
-<span class="movie-type type-${m.MediaType.toLowerCase()}">${m.MediaType}</span>
-${m.Watched?'<span style="color:#2ecc99;margin-left:5px;"><i class="fas fa-check-circle"></i> Assistido</span>':''}
-<div class="movie-actions">
-<button class="action-btn watched-btn" onclick="toggleWatched('${m.id}')">${m.Watched?'<i class="fas fa-undo"></i> Não assistido':'<i class="fas fa-check"></i> Assistido'}</button>
-<button class="action-btn delete-btn" onclick="deleteMovie('${m.id}')"><i class="fas fa-trash"></i> Remover</button>
-</div>
-</div>`;
-moviesContainer.appendChild(card);
-});
-
 // ----------------- Funções -----------------
-window.toggleWatched=async function(id){
-const uid=auth.currentUser.uid;
-const movieRef=doc(db, `users/${uid}/movies/${id}`);
-const movie=movies.find(m=>m.id===id);
-await setDoc(movieRef,{...movie,Watched:!movie.Watched});
-loadMovies();
-};
+function showLoginScreen() {
+    loginScreen.style.display = "block";
+    appScreen.style.display = "none";
+}
+function showAppScreen() {
+    loginScreen.style.display = "none";
+    appScreen.style.display = "block";
+    loadMovies();
+}
 
-window.deleteMovie=async function(id){
-if(confirm("Remover este filme?")){
-const uid=auth.currentUser.uid;
-await setDoc(doc(db, `users/${uid}/movies/${id}`),{});
-loadMovies();
-};
+// ----------------- Observador de Autenticação -----------------
+onAuthStateChanged(auth, user => {
+    if (user) {
+        showAppScreen();
+    } else {
+        showLoginScreen();
+    }
+});
+
+// ----------------- Eventos de Autenticação -----------------
+emailLoginForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    const submitterId = e.submitter.id;
+    try {
+        if (submitterId === 'login-button') await signInWithEmailAndPassword(auth, email, password);
+        else if (submitterId === 'signup-button') {
+            await createUserWithEmailAndPassword(auth, email, password);
+            alert("Conta criada com sucesso! Faça login agora.");
+        }
+    } catch (error) {
+        console.error("Erro na autenticação:", error.message);
+        alert("Erro: " + error.message);
+    }
+});
+googleLoginButton.addEventListener('click', async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+        await signInWithPopup(auth, provider);
+    } catch (error) {
+        console.error("Erro no login com Google:", error.message);
+        alert("Erro: " + error.message);
+    }
+});
+logoutButton.addEventListener('click', async () => {
+    try { await signOut(auth); }
+    catch (error) { console.error("Erro no logout:", error.message); }
+});
+
+// ----------------- Eventos do App -----------------
+tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+        tabs.forEach(t=>t.classList.remove("active"));
+        tab.classList.add("active");
+        currentFilter = tab.dataset.filter;
+        renderMovies();
+    });
+});
+
+movieForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const title = document.getElementById("movie-title").value.trim();
+    if (!title) { alert("O título é obrigatório!"); return; }
+    
+    const uid = auth.currentUser.uid;
+    const movieId = `manual-${Date.now()}`;
+    const movieData = {
+        Title: title,
+        Year: document.getElementById("movie-year").value.trim() || null,
+        Genre: document.getElementById("movie-genre").value.trim() || null,
+        Director: document.getElementById("movie-director").value.trim() || null,
+        MediaType: document.getElementById("movie-type").value,
+        Rating: document.getElementById("movie-rating").value || null,
+        Tags: document.getElementById("movie-tags").value.split(",").map(t => t.trim()).filter(t => t),
+        Watched: document.getElementById("movie-watched").checked,
+    };
+    await setDoc(doc(db, `users/${uid}/movies/${movieId}`), movieData);
+    alert(`${title} adicionado à sua coleção!`);
+    loadMovies();
+    movieForm.reset();
+});
+
+// Usando delegação de eventos para botões dinâmicos
+moviesContainer.addEventListener("click", async e => {
+    const target = e.target;
+    const card = target.closest('.movie-card');
+    if (!card) return;
+    const movieId = card.dataset.id;
+    const uid = auth.currentUser.uid;
+    
+    if (target.classList.contains('delete-btn')) {
+        if (confirm("Tem certeza que deseja remover este filme?")) {
+            await deleteDoc(doc(db, `users/${uid}/movies/${movieId}`));
+            loadMovies();
+        }
+    }
+    
+    if (target.classList.contains('watched-btn')) {
+        const movie = movies.find(m => m.id === movieId);
+        if (movie) {
+            await updateDoc(doc(db, `users/${uid}/movies/${movieId}`), {
+                Watched: !movie.Watched
+            });
+            loadMovies();
+        }
+    }
+});
+
+// ----------------- Renderização e Busca -----------------
+async function loadMovies() {
+    if (!auth.currentUser) return;
+    const uid = auth.currentUser.uid;
+    const querySnapshot = await getDocs(collection(db, `users/${uid}/movies`));
+    movies = [];
+    querySnapshot.forEach(doc => movies.push({ ...doc.data(), id: doc.id }));
+    renderMovies();
+}
+
+function renderMovies() {
+    moviesContainer.innerHTML = "";
+    let filtered = movies;
+    if (currentFilter !== "all") {
+        if (currentFilter === "watched") filtered = movies.filter(m => m.Watched);
+        // O seu código original não tinha a lógica para o filtro de favoritos
+        // Mas o HTML tem. Seus filmes precisam ter um campo "Favorite: true" para que funcione.
+        else if (currentFilter === "favorite") filtered = movies.filter(m => m.Favorite);
+        else filtered = movies.filter(m => m.MediaType === currentFilter);
+    }
+    if (filtered.length === 0) {
+        moviesContainer.innerHTML = `<div class="empty-state"><i class="fas fa-film"></i><h3>Nenhum filme</h3></div>`;
+        return;
+    }
+    filtered.forEach(m => {
+        const card = document.createElement("div");
+        card.className = "movie-card fade-in";
+        card.dataset.id = m.id;
+        card.innerHTML = `
+            <img src="${m.Poster || 'https://via.placeholder.com/300x450/2c3e50/ecf0f1?text=Sem+Imagem'}" class="movie-poster" alt="${m.Title}">
+            <div class="movie-info">
+                <h3 class="movie-title">${m.Title}</h3>
+                <p class="movie-year">${m.Year || ''}</p>
+                <p class="movie-details">Gênero: ${m.Genre || 'N/A'}</p>
+                <p class="movie-details">Diretor: ${m.Director || 'N/A'}</p>
+                ${m.Rating ? `<p class="movie-details">Nota: ${m.Rating}/10</p>` : ''}
+                ${m.Tags && m.Tags.length > 0 ? `<p class="movie-details">Tags: ${m.Tags.join(', ')}</p>` : ''}
+                <span class="movie-type type-${(m.MediaType || 'digital').toLowerCase()}">${m.MediaType || 'Digital'}</span>
+                ${m.Watched ? '<span style="color:#2ecc71;margin-left:5px;"><i class="fas fa-check-circle"></i> Assistido</span>' : ''}
+                <div class="movie-actions">
+                    <button class="action-btn watched-btn"><i class="fas fa-eye${m.Watched ? '-slash' : ''}"></i> ${m.Watched ? 'Desmarcar' : 'Marcar como assistido'}</button>
+                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i> Remover</button>
+                </div>
+            </div>
+        `;
+        moviesContainer.appendChild(card);
+    });
 }
 </script>
 </body>

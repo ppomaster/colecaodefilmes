@@ -45,7 +45,7 @@
         // Importa todas as funções necessárias do Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
         import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-        import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+        import { getFirestore, enableIndexedDbPersistence, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
         // SEU OBJETO DE CONFIGURAÇÃO DO FIREBASE
         const firebaseConfig = {
@@ -160,6 +160,44 @@
             } catch (error) {
                 console.error("Erro ao buscar filme:", error);
                 movieResults.innerHTML = `<p>Erro ao buscar filme. Tente novamente mais tarde.</p>`;
+            }
+        });
+
+        // NOVO: Lógica de adicionar filme à coleção
+        document.addEventListener('click', async (e) => {
+            // Verifica se o clique foi em um botão de adicionar à coleção
+            if (e.target.matches('.add-to-collection')) {
+                const button = e.target;
+                const movieId = button.dataset.imdbid;
+                const uid = auth.currentUser.uid;
+
+                if (!uid) {
+                    alert("Você precisa estar logado para adicionar filmes.");
+                    return;
+                }
+
+                // Dados do filme para salvar no Firestore
+                const movieData = {
+                    Title: button.dataset.title,
+                    Year: button.dataset.year,
+                    Poster: button.dataset.poster,
+                    Watched: false,
+                    Favorite: false,
+                    Rating: null,
+                    Tags: [],
+                    source: 'omdb'
+                };
+                
+                // Caminho para o documento no Firestore: users/{uid}/movies/{movieId}
+                const docRef = doc(db, `users/${uid}/movies/${movieId}`);
+                
+                try {
+                    await setDoc(docRef, movieData);
+                    alert(`"${movieData.Title}" foi adicionado à sua coleção!`);
+                } catch (error) {
+                    console.error("Erro ao adicionar filme:", error);
+                    alert("Erro ao adicionar filme. Tente novamente.");
+                }
             }
         });
     </script>

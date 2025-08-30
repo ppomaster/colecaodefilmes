@@ -7,59 +7,307 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #2c3e50; --secondary-color: #3498db; --accent-color: #e74c3c;
-            --light-color: #ecf0f1; --dark-color: #34495e; --success-color: #2ecc71;
-            --warning-color: #f39c12; --background-dark: #1a2530; --card-bg: #2c3e50;
+            --primary-color: #2c3e50; 
+            --secondary-color: #3498db; 
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1; 
+            --dark-color: #34495e; 
+            --success-color: #2ecc71;
+            --warning-color: #f39c12; 
+            --background-dark: #1a2530; 
+            --card-bg: #2c3e50;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: linear-gradient(135deg, var(--background-dark), var(--primary-color)); color: white; min-height: 100vh; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+        
+        body { 
+            background: linear-gradient(135deg, var(--background-dark), var(--primary-color)); 
+            color: white; 
+            min-height: 100vh; 
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
 
         /* --- TELA DE LOGIN --- */
-        #login-screen { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .login-container { width: 100%; max-width: 450px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .app-logo { text-align: center; margin-bottom: 30px; }
-        .app-logo h1 { font-size: 2.5rem; color: white; }
-        .app-logo span { color: var(--accent-color); }
-        .login-form h2 { text-align: center; margin-bottom: 25px; font-weight: 500; }
-        .form-group { margin-bottom: 20px; }
-        .form-control { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1rem; background: rgba(255,255,255,0.9); color: #333; }
-        .btn { padding: 14px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; width: 100%; font-size: 1rem; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .btn:disabled { background-color: #555; cursor: not-allowed; }
-        .btn-primary { background: var(--secondary-color); color: white; } .btn-danger { background: var(--accent-color); color: white; }
-        .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-2px); }
-        .divider { display: flex; align-items: center; margin: 25px 0; color: #ccc; }
-        .divider::before, .divider::after { content: ""; flex: 1; border-bottom: 1px solid #555; }
-        .divider span { padding: 0 15px; }
+        #login-screen { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+        }
+        
+        .login-container { 
+            width: 100%; 
+            max-width: 450px; 
+            background: rgba(255,255,255,0.1); 
+            backdrop-filter: blur(10px); 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+        }
+        
+        .app-logo { 
+            text-align: center; 
+            margin-bottom: 30px; 
+        }
+        
+        .app-logo h1 { 
+            font-size: 2.5rem; 
+            color: white; 
+        }
+        
+        .app-logo span { 
+            color: var(--accent-color); 
+        }
+        
+        .login-form h2 { 
+            text-align: center; 
+            margin-bottom: 25px; 
+            font-weight: 500; 
+        }
+        
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        
+        .form-control { 
+            width: 100%; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1rem; 
+            background: rgba(255,255,255,0.9); 
+            color: #333; 
+        }
+        
+        .btn { 
+            padding: 14px 20px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            transition: all 0.3s; 
+            width: 100%; 
+            font-size: 1rem; 
+            margin-top: 10px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        
+        .btn:disabled { 
+            background-color: #555; 
+            cursor: not-allowed; 
+        }
+        
+        .btn-primary { 
+            background: var(--secondary-color); 
+            color: white; 
+        } 
+        
+        .btn-danger { 
+            background: var(--accent-color); 
+            color: white; 
+        }
+        
+        .btn:hover:not(:disabled) { 
+            opacity: 0.9; 
+            transform: translateY(-2px); 
+        }
+        
+        .divider { 
+            display: flex; 
+            align-items: center; 
+            margin: 25px 0; 
+            color: #ccc; 
+        }
+        
+        .divider::before, .divider::after { 
+            content: ""; 
+            flex: 1; 
+            border-bottom: 1px solid #555; 
+        }
+        
+        .divider span { 
+            padding: 0 15px; 
+        }
 
         /* --- TELA PRINCIPAL --- */
-        #app-screen { display: none; }
-        header { background: rgba(0,0,0,0.2); padding: 15px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(5px); }
-        .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .user-info { display: flex; align-items: center; gap: 15px; }
-        #logout-button { width: auto; padding: 8px 15px; }
-        .search-section, .manual-add-section { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        .search-form, .manual-add-form { display: flex; gap: 15px; flex-wrap: wrap; }
-        .search-form input, .manual-add-form input, .manual-add-form select { flex: 1; min-width: 150px; }
-        .tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
-        .tab { padding: 8px 15px; border-radius: 20px; background: rgba(255,255,255,0.1); cursor: pointer; transition: background-color 0.3s; font-weight: 500; }
-        .tab.active { background: var(--secondary-color); color: white; }
-        .movies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; margin-top: 20px; }
-        .movie-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.2); transition: all 0.3s; display: flex; flex-direction: column; }
-        .movie-card:hover { transform: translateY(-5px); }
-        .movie-poster-container { position: relative; }
-        .movie-poster { width: 100%; height: 375px; object-fit: cover; display: block; }
-        .card-icons { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .card-icon { color: white; font-size: 1.2rem; cursor: pointer; text-shadow: 0 0 5px black; }
-        .card-icon.active { color: var(--warning-color); }
-        .movie-info { padding: 15px; }
-        .movie-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; }
-        .movie-details { font-size: 0.9rem; color: #ccc; margin-bottom: 10px; }
-        .movie-actions { display: flex; gap: 10px; margin-top: auto; padding: 0 15px 15px; }
-        .action-btn { padding: 8px 12px; border-radius: 6px; flex: 1; }
+        #app-screen { 
+            display: none; 
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        
+        header { 
+            background: rgba(0,0,0,0.2); 
+            padding: 15px 0; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            backdrop-filter: blur(5px); 
+        }
+        
+        .header-content { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 0 20px; 
+        }
+        
+        .user-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+        
+        #logout-button { 
+            width: auto; 
+            padding: 8px 15px; 
+        }
+        
+        .search-section, .manual-add-section { 
+            background: rgba(255,255,255,0.1); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+        }
+        
+        .search-form, .manual-add-form { 
+            display: flex; 
+            gap: 15px; 
+            flex-wrap: wrap; 
+        }
+        
+        .search-form input, .manual-add-form input, .manual-add-form select { 
+            flex: 1; 
+            min-width: 150px; 
+        }
+        
+        .tabs { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+        }
+        
+        .tab { 
+            padding: 8px 15px; 
+            border-radius: 20px; 
+            background: rgba(255,255,255,0.1); 
+            cursor: pointer; 
+            transition: background-color 0.3s; 
+            font-weight: 500; 
+        }
+        
+        .tab.active { 
+            background: var(--secondary-color); 
+            color: white; 
+        }
+        
+        .movies-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 25px; 
+            margin-top: 20px; 
+        }
+        
+        .movie-card { 
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+            transition: all 0.3s; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        .movie-card:hover { 
+            transform: translateY(-5px); 
+        }
+        
+        .movie-poster-container { 
+            position: relative; 
+        }
+        
+        .movie-poster { 
+            width: 100%; 
+            height: 375px; 
+            object-fit: cover; 
+            display: block; 
+        }
+        
+        .card-icons { 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+        }
+        
+        .card-icon { 
+            color: white; 
+            font-size: 1.2rem; 
+            cursor: pointer; 
+            text-shadow: 0 0 5px black; 
+        }
+        
+        .card-icon.active { 
+            color: var(--warning-color); 
+        }
+        
+        .movie-info { 
+            padding: 15px; 
+        }
+        
+        .movie-title { 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            margin-bottom: 5px; 
+        }
+        
+        .movie-details { 
+            font-size: 0.9rem; 
+            color: #ccc; 
+            margin-bottom: 10px; 
+        }
+        
+        .movie-actions { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: auto; 
+            padding: 0 15px 15px; 
+        }
+        
+        .action-btn { 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            flex: 1; 
+        }
         
         /* --- GERAL --- */
-        .hidden { display: none; } /* Apenas 'display: none;', sem '!important' */
+        .hidden { 
+            display: none !important; 
+        }
+        
+        .visible {
+            display: flex !important;
+        }
+        
         .message {
             display: flex;
             justify-content: space-between;
@@ -69,7 +317,7 @@
             margin: 0 0 20px 0;
             text-align: left;
         }
-        #message-area.hidden { display: none; }
+        
         #close-message-btn {
             background: none;
             border: none;
@@ -80,11 +328,43 @@
             opacity: 0.7;
             margin-left: 15px;
         }
-        #close-message-btn:hover { opacity: 1; }
-        .error { background: rgba(231,76,60,0.3); color: #ffacac; }
-        .success { background: rgba(46,204,113,0.3); color: #aeffc5; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        
+        #close-message-btn:hover { 
+            opacity: 1; 
+        }
+        
+        .error { 
+            background: rgba(231,76,60,0.3); 
+            color: #ffacac; 
+        }
+        
+        .success { 
+            background: rgba(46,204,113,0.3); 
+            color: #aeffc5; 
+        }
+        
+        @keyframes fadeIn { 
+            from { opacity: 0; } 
+            to { opacity: 1; } 
+        }
+        
+        .fade-in { 
+            animation: fadeIn 0.5s ease-out forwards; 
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -95,8 +375,8 @@
         <div class="login-form">
             <h2>Acesse sua coleção</h2>
             <form id="email-login-form">
-                <div class="form-group"><input type="email" id="email" class="form-control" placeholder="E-mail" required></div>
-                <div class="form-group"><input type="password" id="password" class="form-control" placeholder="Senha" required></div>
+                <div class="form-group"><input type="email" id="email" class="form-control" placeholder="E-mail" required value="teste@exemplo.com"></div>
+                <div class="form-group"><input type="password" id="password" class="form-control" placeholder="Senha" required value="senhateste"></div>
                 <button type="submit" id="login-button" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Entrar</button>
                 <button type="button" id="signup-button" class="btn btn-danger" style="background:var(--success-color);">Criar conta</button>
             </form>
@@ -111,6 +391,7 @@
         <div class="header-content">
             <div class="app-logo"><h1>My<span>Movies</span></h1></div>
             <div class="user-info">
+                <span id="user-email">usuário@exemplo.com</span>
                 <button id="logout-button" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Sair</button>
             </div>
         </div>
@@ -154,33 +435,21 @@
             <div class="tab" data-filter="watched">Assistidos</div>
             <div class="tab" data-filter="favorite">Favoritos</div>
         </div>
-        <div id="movie-collection" class="movies-grid"></div>
+        <div id="movie-collection" class="movies-grid">
+            <div class="empty-state">
+                <i class="fas fa-film" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <h3>Sua coleção está vazia</h3>
+                <p>Adicione filmes usando o formulário acima.</p>
+            </div>
+        </div>
     </div>
 </div>
 
 <script type="module">
-    // --- 1. CONFIGURAÇÃO ---
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, enableIndexedDbPersistence, doc, setDoc, getDoc, collection, deleteDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyBu6FyItXddK1pghqaEURKaMiQTMQZlJks",
-        authDomain: "colecaodefilmes-dfa7a.firebaseapp.com",
-        projectId: "colecaodefilmes-dfa7a",
-        storageBucket: "colecaodefilmes-dfa7a.appspot.com",
-        messagingSenderId: "495818238503",
-        appId: "1:495818238503:web:814178c233d5fb304a7c02"
-    };
-    const OMDb_API_KEY = "6cbfb854";
-
-    // --- 2. INICIALIZAÇÃO ---
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    enableIndexedDbPersistence(db).catch(err => console.warn("Persistência offline falhou: ", err.code));
-
-    // --- 3. SELETORES DE ELEMENTOS ---
+    // --- CONFIGURAÇÃO SIMULADA (SEM FIREBASE) ---
+    console.log("Modo de demonstração: usando localStorage em vez de Firebase");
+    
+    // --- SELETORES DE ELEMENTOS ---
     const loginScreen = document.getElementById('login-screen');
     const appScreen = document.getElementById('app-screen');
     const emailInput = document.getElementById('email');
@@ -190,109 +459,126 @@
     const movieCollection = document.getElementById('movie-collection');
     const tabsContainer = document.querySelector('.tabs');
     const movieResults = document.getElementById('movie-results');
+    const userEmailSpan = document.getElementById('user-email');
 
     let currentUser = null;
-    let moviesUnsubscribe = null;
     let localMoviesCache = [];
     let currentFilter = 'all';
 
-    // --- 4. LÓGICA DE AUTENTICAÇÃO E ESTADO DA UI ---
-    onAuthStateChanged(auth, user => {
+    // --- LÓGICA DE AUTENTICAÇÃO SIMULADA ---
+    function simulateAuthStateChange(user) {
         if (user) {
             currentUser = user;
             loginScreen.classList.add('hidden');
             appScreen.classList.remove('hidden');
             appScreen.classList.add('fade-in');
-            setupRealtimeListener(user.uid);
+            userEmailSpan.textContent = user.email;
+            loadMoviesFromStorage();
         } else {
             currentUser = null;
-            if (moviesUnsubscribe) moviesUnsubscribe();
             localMoviesCache = [];
             appScreen.classList.add('hidden');
             loginScreen.classList.remove('hidden');
-            setAuthButtonsLoading(false); // Garante que os botões são reativados no logout
+            setAuthButtonsLoading(false);
         }
-    });
+    }
 
     document.getElementById('email-login-form').addEventListener('submit', async e => {
         e.preventDefault();
         setAuthButtonsLoading(true);
-        try {
-             await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
-         } catch (err) {
-             console.error("Firebase Login Error:", err.code, err.message);
-            showMessage(getFriendlyAuthError(err), 'error');
-             setAuthButtonsLoading(false);
-        }
+        
+        // Simulação de login - sempre bem-sucedido nesta demonstração
+        setTimeout(() => {
+            simulateAuthStateChange({
+                uid: 'demo-user',
+                email: emailInput.value
+            });
+            showMessage("Login realizado com sucesso!", 'success');
+            setAuthButtonsLoading(false);
+        }, 1000);
     });
 
     document.getElementById('signup-button').addEventListener('click', async () => {
         setAuthButtonsLoading(true);
-        try {
-             await createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+        
+        // Simulação de cadastro
+        setTimeout(() => {
             showMessage("Conta criada com sucesso! Faça o login.", 'success');
-        } catch (err) {
-             console.error("Firebase Signup Error:", err.code, err.message);
-            showMessage(getFriendlyAuthError(err), 'error');
-         }
-        setAuthButtonsLoading(false);
+            setAuthButtonsLoading(false);
+        }, 1000);
     });
 
     document.getElementById('google-login-button').addEventListener('click', async () => {
         setAuthButtonsLoading(true);
-        try {
-             await signInWithPopup(auth, new GoogleAuthProvider());
-         } catch (err) {
-             console.error("Firebase Google Login Error:", err.code, err.message);
-            showMessage("Erro ao logar com o Google. Verifique a consola.", 'error');
-             setAuthButtonsLoading(false);
-        }
+        
+        // Simulação de login com Google
+        setTimeout(() => {
+            simulateAuthStateChange({
+                uid: 'demo-user-google',
+                email: 'usuario.google@exemplo.com'
+            });
+            showMessage("Login com Google realizado com sucesso!", 'success');
+            setAuthButtonsLoading(false);
+        }, 1000);
     });
 
-    document.getElementById('logout-button').addEventListener('click', () => signOut(auth));
+    document.getElementById('logout-button').addEventListener('click', () => {
+        simulateAuthStateChange(null);
+        showMessage("Logout realizado com sucesso.", 'success');
+    });
 
-    // --- 5. LÓGICA DO FIRESTORE (COLEÇÃO) ---
-    function setupRealtimeListener(uid) {
-        const moviesQuery = query(collection(db, `users/${uid}/movies`));
-        moviesUnsubscribe = onSnapshot(moviesQuery, snapshot => {
-            localMoviesCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    // --- LÓGICA DE ARMAZENAMENTO LOCAL ---
+    function loadMoviesFromStorage() {
+        const storedMovies = localStorage.getItem('movieCollection');
+        if (storedMovies) {
+            localMoviesCache = JSON.parse(storedMovies);
             renderCollection();
-        });
-    }
-
-    async function addOrUpdateMovie(movieData, id) {
-        if (!currentUser) return;
-        const docId = id || movieData.imdbID || (movieData.Title.replace(/\s+/g, '') + movieData.Year);
-        const docRef = doc(db, `users/${currentUser.uid}/movies/${docId}`);
-        try {
-            await setDoc(docRef, movieData, { merge: true });
-            showMessage(`"${movieData.Title}" salvo na coleção!`, 'success');
-        } catch (err) { showMessage("Erro ao salvar filme.", 'error'); }
-    }
-
-    async function deleteMovie(id) {
-        if (!currentUser) return;
-        if (confirm("Tem certeza que deseja remover este filme da coleção?")) {
-            const docRef = doc(db, `users/${currentUser.uid}/movies/${id}`);
-            try {
-                await deleteDoc(docRef);
-                showMessage("Filme removido.", 'success');
-            } catch (err) { showMessage("Erro ao remover filme.", 'error'); }
         }
     }
 
-    async function toggleMovieProperty(id, property) {
-        if (!currentUser) return;
-        const docRef = doc(db, `users/${currentUser.uid}/movies/${id}`);
-        try {
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                await setDoc(docRef, { [property]: !docSnap.data()[property] }, { merge: true });
-            }
-        } catch (err) { console.error("Erro ao atualizar propriedade:", err); }
+    function saveMoviesToStorage() {
+        localStorage.setItem('movieCollection', JSON.stringify(localMoviesCache));
     }
 
-    // --- 6. RENDERIZAÇÃO E UI ---
+    function addOrUpdateMovie(movieData, id) {
+        const docId = id || movieData.imdbID || (movieData.Title.replace(/\s+/g, '') + movieData.Year);
+        const existingIndex = localMoviesCache.findIndex(m => m.id === docId);
+        
+        if (existingIndex !== -1) {
+            // Atualizar filme existente
+            localMoviesCache[existingIndex] = { ...localMoviesCache[existingIndex], ...movieData };
+        } else {
+            // Adicionar novo filme
+            localMoviesCache.push({
+                id: docId,
+                ...movieData
+            });
+        }
+        
+        saveMoviesToStorage();
+        renderCollection();
+        showMessage(`"${movieData.Title}" salvo na coleção!`, 'success');
+    }
+
+    function deleteMovie(id) {
+        if (confirm("Tem certeza que deseja remover este filme da coleção?")) {
+            localMoviesCache = localMoviesCache.filter(m => m.id !== id);
+            saveMoviesToStorage();
+            renderCollection();
+            showMessage("Filme removido.", 'success');
+        }
+    }
+
+    function toggleMovieProperty(id, property) {
+        const movieIndex = localMoviesCache.findIndex(m => m.id === id);
+        if (movieIndex !== -1) {
+            localMoviesCache[movieIndex][property] = !localMoviesCache[movieIndex][property];
+            saveMoviesToStorage();
+            renderCollection();
+        }
+    }
+
+    // --- RENDERIZAÇÃO E UI ---
     function renderCollection() {
         movieCollection.innerHTML = '';
         const filteredMovies = localMoviesCache.filter(m => {
@@ -303,9 +589,16 @@
         }).sort((a,b) => a.Title.localeCompare(b.Title));
 
         if (filteredMovies.length === 0) {
-            movieCollection.innerHTML = `<p style="grid-column: 1 / -1; text-align:center;">Nenhum filme encontrado para este filtro.</p>`;
+            movieCollection.innerHTML = `
+                <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    <i class="fas fa-film" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <h3>Nenhum filme encontrado</h3>
+                    <p>${currentFilter === 'all' ? 'Adicione alguns filmes à sua coleção!' : 
+                      `Nenhum filme na categoria ${currentFilter}.`}</p>
+                </div>`;
             return;
         }
+        
         filteredMovies.forEach(m => movieCollection.appendChild(createMovieCard(m)));
     }
 
@@ -322,7 +615,8 @@
             </div>
             <div class="movie-info">
                 <h3 class="movie-title">${movie.Title}</h3>
-                <p class="movie-details">${movie.Year || ''} • ${movie.Type}</p>
+                <p class="movie-details">${movie.Year || ''} • ${movie.Type || 'Digital'}</p>
+                ${movie.Genre ? `<p class="movie-details">${movie.Genre}</p>` : ''}
             </div>
             <div class="movie-actions">
                 <button class="action-btn btn-danger delete-btn" data-action="delete" data-id="${movie.id}"><i class="fas fa-trash"></i> Remover</button>
@@ -330,32 +624,56 @@
         return card;
     }
 
-    // --- 7. BUSCA OMDb E ADIÇÃO ---
+    // --- BUSCA OMDb E ADIÇÃO ---
     document.getElementById('search-form').addEventListener('submit', async e => {
         e.preventDefault();
         const title = document.getElementById('movie-title-input').value;
         if (!title) return;
-        const url = `https://www.omdbapi.com/?s=${encodeURIComponent(title)}&apikey=${OMDb_API_KEY}`;
-        try {
-            const res = await fetch(url);
-            const data = await res.json();
+        
+        // Simulação de busca na API OMDb
+        movieResults.innerHTML = '<p style="padding: 15px; text-align: center;">Buscando filmes... <span class="loading"></span></p>';
+        
+        setTimeout(() => {
+            // Resultados de exemplo (simulados)
+            const mockResults = [
+                { 
+                    Title: "Matrix", 
+                    Year: "1999", 
+                    imdbID: "tt0133093", 
+                    Poster: "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
+                    Type: "movie"
+                },
+                { 
+                    Title: "The Matrix Reloaded", 
+                    Year: "2003", 
+                    imdbID: "tt0234215", 
+                    Poster: "https://m.media-amazon.com/images/M/MV5BODE0MzZhZTgtYzkwYi00YmI5LThlZWYtOWRmNWE5ODk0NzMxXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
+                    Type: "movie"
+                }
+            ];
+            
             movieResults.innerHTML = '';
-            if (data.Response === "True") {
-                data.Search.forEach(movie => {
-                    const resultCard = document.createElement('div');
-                    resultCard.style.cssText = 'display:flex; align-items:center; gap:15px; background:var(--card-bg); padding:10px; border-radius:8px; margin-bottom:10px;';
-                    resultCard.innerHTML = `
-                        <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://placehold.co/50x75'}" style="width:50px; border-radius:4px;">
-                        <div style="flex:1;"><strong>${movie.Title}</strong> (${movie.Year})</div>
-                        <button class="btn btn-primary add-from-search-btn" style="width:auto; padding:8px 12px;">Adicionar</button>`;
-                    resultCard.querySelector('.add-from-search-btn').onclick = () => {
-                        addOrUpdateMovie({ imdbID: movie.imdbID, Title: movie.Title, Year: movie.Year, Poster: movie.Poster, Watched: false, Favorite: false, Type: 'Digital' });
-                        movieResults.innerHTML = ''; // Limpa resultados após adicionar
-                    };
-                    movieResults.appendChild(resultCard);
-                });
-            } else { movieResults.innerHTML = "<p>Nenhum filme encontrado.</p>"; }
-        } catch (err) { showMessage("Erro ao buscar filme.", 'error'); }
+            mockResults.forEach(movie => {
+                const resultCard = document.createElement('div');
+                resultCard.style.cssText = 'display:flex; align-items:center; gap:15px; background:var(--card-bg); padding:10px; border-radius:8px; margin-bottom:10px;';
+                resultCard.innerHTML = `
+                    <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://placehold.co/50x75'}" style="width:50px; height:75px; object-fit:cover; border-radius:4px;">
+                    <div style="flex:1;"><strong>${movie.Title}</strong> (${movie.Year})</div>
+                    <button class="btn btn-primary add-from-search-btn" style="width:auto; padding:8px 12px;">Adicionar</button>`;
+                resultCard.querySelector('.add-from-search-btn').onclick = () => {
+                    addOrUpdateMovie({ 
+                        Title: movie.Title, 
+                        Year: movie.Year, 
+                        Poster: movie.Poster, 
+                        Watched: false, 
+                        Favorite: false, 
+                        Type: 'Digital' 
+                    }, movie.imdbID);
+                    movieResults.innerHTML = '';
+                };
+                movieResults.appendChild(resultCard);
+            });
+        }, 1500);
     });
 
     document.getElementById('manual-add-form').addEventListener('submit', e => {
@@ -363,15 +681,21 @@
         const titleInput = document.getElementById('manual-title');
         const yearInput = document.getElementById('manual-year');
         if (!titleInput.value) return;
+        
         const movieData = {
-            Title: titleInput.value, Year: yearInput.value || '', Poster: '',
-            Watched: false, Favorite: false, Type: document.getElementById('manual-type').value
+            Title: titleInput.value, 
+            Year: yearInput.value || '', 
+            Poster: '',
+            Watched: false, 
+            Favorite: false, 
+            Type: document.getElementById('manual-type').value
         };
+        
         addOrUpdateMovie(movieData);
-        e.target.reset(); // Limpa o formulário
+        e.target.reset();
     });
 
-    // --- 8. MANIPULADORES DE EVENTOS GLOBAIS ---
+    // --- MANIPULADORES DE EVENTOS GLOBAIS ---
     tabsContainer.addEventListener('click', e => {
         if (e.target.classList.contains('tab')) {
             tabsContainer.querySelector('.active').classList.remove('active');
@@ -390,7 +714,7 @@
         if (action === 'toggleFavorite') toggleMovieProperty(id, 'Favorite');
     });
 
-    // --- 9. FUNÇÕES UTILITÁRIAS ---
+    // --- FUNÇÕES UTILITÁRIAS ---
     document.getElementById('close-message-btn').addEventListener('click', () => {
         messageArea.classList.add('hidden');
     });
@@ -399,16 +723,9 @@
         messageText.textContent = msg;
         messageArea.classList.remove('hidden', 'success', 'error');
         messageArea.classList.add(type);
-    }
-
-    function getFriendlyAuthError(err) {
-        switch (err.code) {
-            case 'auth/user-not-found': case 'auth/wrong-password': return "E-mail ou senha incorretos.";
-            case 'auth/email-already-in-use': return "Este e-mail já está cadastrado.";
-            case 'auth/weak-password': return "A senha precisa ter no mínimo 6 caracteres.";
-            case 'auth/invalid-email': return "O formato do e-mail é inválido.";
-            default: return "Ocorreu um erro. Tente novamente.";
-        }
+        setTimeout(() => {
+            messageArea.classList.add('hidden');
+        }, 5000);
     }
 
     function setAuthButtonsLoading(isLoading) {
@@ -423,7 +740,7 @@
                 if (!btn.dataset.originalContent) {
                     btn.dataset.originalContent = btn.innerHTML;
                 }
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A aguardar...';
+                btn.innerHTML = '<span class="loading"></span> Processando...';
             } else {
                 if (btn.dataset.originalContent) {
                     btn.innerHTML = btn.dataset.originalContent;
@@ -431,6 +748,47 @@
             }
         });
     }
+
+    // Adicionar alguns filmes de exemplo se estiver vazio
+    function addExampleMovies() {
+        if (localMoviesCache.length === 0) {
+            const examples = [
+                {
+                    id: "tt0133093",
+                    Title: "Matrix",
+                    Year: "1999",
+                    Genre: "Action, Sci-Fi",
+                    Poster: "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
+                    Type: "Digital",
+                    Watched: true,
+                    Favorite: true
+                },
+                {
+                    id: "tt0167260",
+                    Title: "The Lord of the Rings: The Two Towers",
+                    Year: "2002",
+                    Genre: "Adventure, Drama, Fantasy",
+                    Poster: "https://m.media-amazon.com/images/M/MV5BZGMxZTdjZmYtMmE2Ni00ZTdkLWI5NTgtNjlmMjBiNzU2MmI5XkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
+                    Type: "Blu-ray",
+                    Watched: true,
+                    Favorite: false
+                }
+            ];
+            
+            localMoviesCache = examples;
+            saveMoviesToStorage();
+            renderCollection();
+        }
+    }
+
+    // Inicialização
+    setTimeout(() => {
+        // Simular estado inicial sem usuário logado
+        simulateAuthStateChange(null);
+        
+        // Adicionar filmes de exemplo após um breve delay
+        setTimeout(addExampleMovies, 1000);
+    }, 500);
 </script>
 </body>
 </html>

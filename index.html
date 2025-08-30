@@ -14,7 +14,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: linear-gradient(135deg, var(--background-dark), var(--primary-color)); color: white; min-height: 100vh; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        
+
         /* --- TELA DE LOGIN --- */
         #login-screen { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         .login-container { width: 100%; max-width: 450px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
@@ -59,14 +59,14 @@
         .action-btn { padding: 8px 12px; border-radius: 6px; flex: 1; }
         
         /* --- GERAL --- */
-        .hidden { display: none !important; }
-        .message { 
+        .hidden { display: none; } /* Apenas 'display: none;', sem '!important' */
+        .message {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px; 
-            border-radius: 8px; 
-            margin: 0 0 20px 0; 
+            padding: 15px;
+            border-radius: 8px;
+            margin: 0 0 20px 0;
             text-align: left;
         }
         #message-area.hidden { display: none; }
@@ -89,7 +89,6 @@
 </head>
 <body>
 
-<!-- TELA DE LOGIN -->
 <div id="login-screen">
     <div class="login-container fade-in">
         <div class="app-logo"><h1>My<span>Movies</span></h1></div>
@@ -107,7 +106,6 @@
     </div>
 </div>
 
-<!-- TELA PRINCIPAL DO APP -->
 <div id="app-screen" class="hidden">
     <header>
         <div class="header-content">
@@ -192,7 +190,7 @@
     const movieCollection = document.getElementById('movie-collection');
     const tabsContainer = document.querySelector('.tabs');
     const movieResults = document.getElementById('movie-results');
-    
+
     let currentUser = null;
     let moviesUnsubscribe = null;
     let localMoviesCache = [];
@@ -219,35 +217,35 @@
     document.getElementById('email-login-form').addEventListener('submit', async e => {
         e.preventDefault();
         setAuthButtonsLoading(true);
-        try { 
-            await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value); 
-        } catch (err) { 
-            console.error("Firebase Login Error:", err.code, err.message);
-            showMessage(getFriendlyAuthError(err), 'error'); 
-            setAuthButtonsLoading(false);
+        try {
+             await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+         } catch (err) {
+             console.error("Firebase Login Error:", err.code, err.message);
+            showMessage(getFriendlyAuthError(err), 'error');
+             setAuthButtonsLoading(false);
         }
     });
 
     document.getElementById('signup-button').addEventListener('click', async () => {
         setAuthButtonsLoading(true);
-        try { 
-            await createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+        try {
+             await createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
             showMessage("Conta criada com sucesso! Faça o login.", 'success');
-        } catch (err) { 
-            console.error("Firebase Signup Error:", err.code, err.message);
-            showMessage(getFriendlyAuthError(err), 'error'); 
-        }
+        } catch (err) {
+             console.error("Firebase Signup Error:", err.code, err.message);
+            showMessage(getFriendlyAuthError(err), 'error');
+         }
         setAuthButtonsLoading(false);
     });
 
     document.getElementById('google-login-button').addEventListener('click', async () => {
         setAuthButtonsLoading(true);
-        try { 
-            await signInWithPopup(auth, new GoogleAuthProvider()); 
-        } catch (err) { 
-            console.error("Firebase Google Login Error:", err.code, err.message);
-            showMessage("Erro ao logar com o Google. Verifique a consola.", 'error'); 
-            setAuthButtonsLoading(false);
+        try {
+             await signInWithPopup(auth, new GoogleAuthProvider());
+         } catch (err) {
+             console.error("Firebase Google Login Error:", err.code, err.message);
+            showMessage("Erro ao logar com o Google. Verifique a consola.", 'error');
+             setAuthButtonsLoading(false);
         }
     });
 
@@ -359,20 +357,20 @@
             } else { movieResults.innerHTML = "<p>Nenhum filme encontrado.</p>"; }
         } catch (err) { showMessage("Erro ao buscar filme.", 'error'); }
     });
-    
+
     document.getElementById('manual-add-form').addEventListener('submit', e => {
         e.preventDefault();
         const titleInput = document.getElementById('manual-title');
         const yearInput = document.getElementById('manual-year');
         if (!titleInput.value) return;
         const movieData = {
-            Title: titleInput.value, Year: yearInput.value || '', Poster: '', 
+            Title: titleInput.value, Year: yearInput.value || '', Poster: '',
             Watched: false, Favorite: false, Type: document.getElementById('manual-type').value
         };
         addOrUpdateMovie(movieData);
         e.target.reset(); // Limpa o formulário
     });
-    
+
     // --- 8. MANIPULADORES DE EVENTOS GLOBAIS ---
     tabsContainer.addEventListener('click', e => {
         if (e.target.classList.contains('tab')) {
@@ -436,4 +434,3 @@
 </script>
 </body>
 </html>
-

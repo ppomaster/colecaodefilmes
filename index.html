@@ -25,8 +25,9 @@
         .form-group { margin-bottom: 20px; }
         .form-control { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1rem; background: rgba(255,255,255,0.9); color: #333; }
         .btn { padding: 14px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; width: 100%; font-size: 1rem; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn:disabled { background-color: #555; cursor: not-allowed; }
         .btn-primary { background: var(--secondary-color); color: white; } .btn-danger { background: var(--accent-color); color: white; }
-        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn:hover:not(:disabled) { opacity: 0.9; transform: translateY(-2px); }
         .divider { display: flex; align-items: center; margin: 25px 0; color: #ccc; }
         .divider::before, .divider::after { content: ""; flex: 1; border-bottom: 1px solid #555; }
         .divider span { padding: 0 15px; }
@@ -59,7 +60,27 @@
         
         /* --- GERAL --- */
         .hidden { display: none !important; }
-        .message { padding: 15px; border-radius: 8px; margin: 0 0 20px 0; text-align: center; }
+        .message { 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 0 0 20px 0; 
+            text-align: left;
+        }
+        #message-area.hidden { display: none; }
+        #close-message-btn {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.7;
+            margin-left: 15px;
+        }
+        #close-message-btn:hover { opacity: 1; }
         .error { background: rgba(231,76,60,0.3); color: #ffacac; }
         .success { background: rgba(46,204,113,0.3); color: #aeffc5; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -98,7 +119,10 @@
     </header>
 
     <div class="container">
-        <div id="message-area" class="message hidden"></div>
+        <div id="message-area" class="message hidden">
+            <span id="message-text"></span>
+            <button id="close-message-btn" title="Fechar">&times;</button>
+        </div>
 
         <section class="search-section">
             <h2><i class="fas fa-search"></i> Buscar e Adicionar Filme</h2>
@@ -164,14 +188,15 @@
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const messageArea = document.getElementById('message-area');
+    const messageText = document.getElementById('message-text');
     const movieCollection = document.getElementById('movie-collection');
     const tabsContainer = document.querySelector('.tabs');
     const movieResults = document.getElementById('movie-results');
     
     let currentUser = null;
     let moviesUnsubscribe = null;
-    let currentFilter = 'all';
     let localMoviesCache = [];
+    let currentFilter = 'all';
 
     // --- 4. LÓGICA DE AUTENTICAÇÃO E ESTADO DA UI ---
     onAuthStateChanged(auth, user => {
@@ -187,25 +212,43 @@
             localMoviesCache = [];
             appScreen.classList.add('hidden');
             loginScreen.classList.remove('hidden');
+            setAuthButtonsLoading(false); // Garante que os botões são reativados no logout
         }
     });
 
     document.getElementById('email-login-form').addEventListener('submit', async e => {
         e.preventDefault();
-        try { await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value); } 
-        catch (err) { showMessage(getFriendlyAuthError(err), 'error'); }
+        setAuthButtonsLoading(true);
+        try { 
+            await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value); 
+        } catch (err) { 
+            console.error("Firebase Login Error:", err.code, err.message);
+            showMessage(getFriendlyAuthError(err), 'error'); 
+            setAuthButtonsLoading(false);
+        }
     });
 
     document.getElementById('signup-button').addEventListener('click', async () => {
+        setAuthButtonsLoading(true);
         try { 
             await createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
             showMessage("Conta criada com sucesso! Faça o login.", 'success');
-        } catch (err) { showMessage(getFriendlyAuthError(err), 'error'); }
+        } catch (err) { 
+            console.error("Firebase Signup Error:", err.code, err.message);
+            showMessage(getFriendlyAuthError(err), 'error'); 
+        }
+        setAuthButtonsLoading(false);
     });
 
     document.getElementById('google-login-button').addEventListener('click', async () => {
-        try { await signInWithPopup(auth, new GoogleAuthProvider()); } 
-        catch (err) { showMessage("Erro ao logar com o Google.", 'error'); }
+        setAuthButtonsLoading(true);
+        try { 
+            await signInWithPopup(auth, new GoogleAuthProvider()); 
+        } catch (err) { 
+            console.error("Firebase Google Login Error:", err.code, err.message);
+            showMessage("Erro ao logar com o Google. Verifique a consola.", 'error'); 
+            setAuthButtonsLoading(false);
+        }
     });
 
     document.getElementById('logout-button').addEventListener('click', () => signOut(auth));
@@ -221,7 +264,6 @@
 
     async function addOrUpdateMovie(movieData, id) {
         if (!currentUser) return;
-        // Se não tiver ID, usa o imdbID ou um ID customizado para filmes manuais
         const docId = id || movieData.imdbID || (movieData.Title.replace(/\s+/g, '') + movieData.Year);
         const docRef = doc(db, `users/${currentUser.uid}/movies/${docId}`);
         try {
@@ -309,7 +351,7 @@
                         <div style="flex:1;"><strong>${movie.Title}</strong> (${movie.Year})</div>
                         <button class="btn btn-primary add-from-search-btn" style="width:auto; padding:8px 12px;">Adicionar</button>`;
                     resultCard.querySelector('.add-from-search-btn').onclick = () => {
-                        addOrUpdateMovie({ ...movie, Watched: false, Favorite: false, Type: 'Digital' });
+                        addOrUpdateMovie({ imdbID: movie.imdbID, Title: movie.Title, Year: movie.Year, Poster: movie.Poster, Watched: false, Favorite: false, Type: 'Digital' });
                         movieResults.innerHTML = ''; // Limpa resultados após adicionar
                     };
                     movieResults.appendChild(resultCard);
@@ -351,10 +393,14 @@
     });
 
     // --- 9. FUNÇÕES UTILITÁRIAS ---
+    document.getElementById('close-message-btn').addEventListener('click', () => {
+        messageArea.classList.add('hidden');
+    });
+
     function showMessage(msg, type = 'success') {
-        messageArea.textContent = msg;
-        messageArea.className = `message ${type}`;
-        setTimeout(() => messageArea.classList.add('hidden'), 4000);
+        messageText.textContent = msg;
+        messageArea.classList.remove('hidden', 'success', 'error');
+        messageArea.classList.add(type);
     }
 
     function getFriendlyAuthError(err) {
@@ -362,4 +408,32 @@
             case 'auth/user-not-found': case 'auth/wrong-password': return "E-mail ou senha incorretos.";
             case 'auth/email-already-in-use': return "Este e-mail já está cadastrado.";
             case 'auth/weak-password': return "A senha precisa ter no mínimo 6 caracteres.";
-            case 'auth/invalid-email': return "O formato do e-mail é inválido."
+            case 'auth/invalid-email': return "O formato do e-mail é inválido.";
+            default: return "Ocorreu um erro. Tente novamente.";
+        }
+    }
+
+    function setAuthButtonsLoading(isLoading) {
+        const buttons = [
+            document.getElementById('login-button'),
+            document.getElementById('signup-button'),
+            document.getElementById('google-login-button')
+        ];
+        buttons.forEach(btn => {
+            btn.disabled = isLoading;
+            if (isLoading) {
+                if (!btn.dataset.originalContent) {
+                    btn.dataset.originalContent = btn.innerHTML;
+                }
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A aguardar...';
+            } else {
+                if (btn.dataset.originalContent) {
+                    btn.innerHTML = btn.dataset.originalContent;
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
+

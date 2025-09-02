@@ -1,30 +1,29 @@
 :root{
   --bg:#111827; --panel:#1f2937; --accent:#3b82f6; --ok:#10b981; --danger:#ef4444; --muted:#9ca3af;
 }
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Arial,sans-serif;}
-body{background:var(--bg);color:#fff;min-height:100vh;padding:10px;}
-.app{max-width:960px;margin:0 auto;}
-.container-card{background:var(--panel);border-radius:10px;padding:12px;margin-bottom:12px;}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
-.title{font-size:20px;font-weight:700;}
-.small{font-size:13px;color:var(--muted);}
-.input{padding:10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:#fff;flex:1;min-width:100px;margin-bottom:8px;}
-.btn{background:var(--accent);border:none;color:#fff;padding:8px 12px;border-radius:6px;cursor:pointer;}
-.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.2);}
-.btn.full{width:100%;}
-.flex{display:flex;gap:10px;align-items:center;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
-.movie-card{background:rgba(255,255,255,0.02);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;}
-.poster{width:100%;height:220px;object-fit:cover;}
-.card-body{padding:8px;display:flex;flex-direction:column;gap:6px;}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
-.tab{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,0.05);cursor:pointer;font-weight:600;}
-.tab.active{background:var(--accent);color:#fff;}
-.search-results{margin-top:8px;display:flex;flex-direction:column;gap:6px;}
-.result-item{display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.05);padding:6px;border-radius:6px;}
-.result-item img{width:50px;height:75px;object-fit:cover;border-radius:4px;}
-@media(max-width:640px){
-  .grid{grid-template-columns:1fr;}
-  .poster{height:200px;}
-  .form-row{flex-direction:column;}
-}
+body{margin:0;font-family:Inter,Segoe UI,system-ui,Arial;background:var(--bg);color:#fff;min-height:100vh}
+.app{max-width:980px;margin:0 auto;padding:14px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.title{font-size:20px;font-weight:700}
+.btn{background:var(--accent);border:none;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.08)}
+.container-card{background:var(--panel);padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+.flex{display:flex;gap:10px;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-top:12px}
+.movie-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-height:300px}
+.poster{width:100%;height:240px;object-fit:cover;cursor:pointer}
+.card-body{padding:8px;display:flex;flex-direction:column;gap:4px}
+.small{font-size:12px;color:var(--muted)}
+.icons{display:flex;gap:6px;position:absolute;right:6px;top:6px;flex-direction:column}
+.icon-btn{background:rgba(0,0,0,0.45);border-radius:6px;padding:6px;color:#fff;cursor:pointer}
+.icon-btn.active{color:var(--ok)}
+.form-row{display:flex;gap:6px;flex-wrap:wrap}
+.input, select{padding:8px;border-radius:6px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff;flex:1;min-width:100px}
+.search-results{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.result-item{display:flex;gap:8px;align-items:center;padding:6px;border-radius:8px;background:rgba(255,255,255,0.02)}
+.result-item img{width:44px;height:66px;object-fit:cover;border-radius:4px}
+.result-item button{padding:4px 6px;border-radius:6px;background:var(--accent);border:none;color:#fff;cursor:pointer}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.tab{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);cursor:pointer;font-weight:600}
+.tab.active{background:var(--accent);color:#fff}
+@media(max-width:480px){.grid{grid-template-columns:1fr}.poster{height:200px}}

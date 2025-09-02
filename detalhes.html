@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Filme</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2 id="titulo"></h2>
+    <img id="poster" class="poster-detalhes" alt="Poster">
+
+    <div class="opcoes">
+      <label><input type="checkbox" id="assistido"> Já assisti</label>
+      <label><input type="checkbox" id="dvd"> Tenho em DVD</label>
+      <label><input type="checkbox" id="vhs"> Tenho em VHS</label>
+      <label><input type="checkbox" id="digital"> Tenho em Digital</label>
+      <label><input type="checkbox" id="telegram"> Tenho no Telegram</label>
+      <label>Minha Nota:
+        <input type="number" id="nota" min="0" max="10" step="0.5">
+      </label>
+    </div>
+
+    <button id="salvar">💾 Salvar Alterações</button>
+    <a href="index.html" class="voltar">⬅ Voltar</a>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+  <script src="firebase.js"></script>
+  <script src="detalhes.js"></script>
+</body>
+</html>

@@ -1,86 +1,39 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>MyMovies</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>MyMovies - Coleção</title>
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script defer type="module" src="app.js"></script>
 </head>
 <body>
-<div id="login-screen" class="screen">
-  <div class="container-card login-card">
-    <h1 class="title">My<span class="accent">Movies</span></h1>
-    <p class="small">Entre para acessar sua coleção</p>
+<header>
+  <h1>MyMovies</h1>
+  <div id="header-actions"></div>
+</header>
 
-    <input id="email" class="input" type="email" placeholder="E-mail">
-    <input id="password" class="input" type="password" placeholder="Senha">
-
-    <div class="form-row">
-      <button id="btn-login" class="btn">Entrar</button>
-      <button id="btn-signup" class="btn ghost">Criar conta</button>
-    </div>
-    <div class="form-row">
-      <button id="btn-google" class="btn ghost"><i class="fab fa-google"></i> Google</button>
-    </div>
-
-    <p id="auth-msg" class="small auth-msg"></p>
-  </div>
-</div>
-
-<div id="app-screen" class="screen hidden">
-  <header class="header">
-    <h1 class="title">My<span class="accent">Movies</span></h1>
-    <div class="flex">
-      <span id="user-email" class="small"></span>
-      <button id="btn-logout" class="btn ghost">Sair</button>
-    </div>
-  </header>
-
-  <div class="container-card search-card">
-    <input id="search-title" class="input" placeholder="Digite título para buscar...">
-    <button id="search-btn" class="btn">Buscar</button>
-    <div id="search-results" class="search-results"></div>
+<main>
+  <!-- LOGIN -->
+  <div id="login-screen">
+    <input id="email" type="email" placeholder="E-mail" />
+    <input id="password" type="password" placeholder="Senha" />
+    <button id="btn-login" class="btn">Entrar</button>
+    <button id="btn-signup" class="btn">Criar conta</button>
+    <div id="auth-msg"></div>
   </div>
 
-  <div class="container-card manual-card">
-    <h2 class="small">Adicionar manualmente</h2>
-    <input id="manual-title" class="input" placeholder="Título">
-    <input id="manual-year" class="input" placeholder="Ano (opcional)">
-    <select id="manual-type" class="input">
-      <option value="DVD">DVD</option>
-      <option value="Blu-ray">Blu-ray</option>
-      <option value="Digital">Digital</option>
-      <option value="VHS">VHS</option>
-      <option value="Telegram">Telegram</option>
-      <option value="Arquivo">Arquivo</option>
-      <option value="Outro">Outro</option>
-    </select>
-    <button id="manual-add-btn" class="btn">Adicionar</button>
-  </div>
+  <!-- COLEÇÃO -->
+  <div id="app-screen" style="display:none;">
+    <div id="user-info"></div>
 
-  <div class="tabs-container">
-    <div class="tabs" id="tabs">
-      <div class="tab active" data-filter="all">Todos</div>
-      <div class="tab" data-filter="DVD">DVD</div>
-      <div class="tab" data-filter="Blu-ray">Blu-ray</div>
-      <div class="tab" data-filter="Digital">Digital</div>
-      <div class="tab" data-filter="VHS">VHS</div>
-      <div class="tab" data-filter="Telegram">Telegram</div>
-      <div class="tab" data-filter="watched">Assistidos</div>
-      <div class="tab" data-filter="favorite">Favoritos</div>
+    <div>
+      <input id="search-title" placeholder="Digite título para buscar..." />
+      <button id="search-btn" class="btn">Buscar</button>
     </div>
-    <div class="counters">
-      <div class="counter">Total: <span id="count-all">0</span></div>
-      <div class="counter">DVD: <span id="count-dvd">0</span></div>
-      <div class="counter">Digital: <span id="count-digital">0</span></div>
-      <div class="counter">VHS: <span id="count-vhs">0</span></div>
-    </div>
+
+    <div class="movie-list" id="collection"></div>
   </div>
-
-  <div id="collection" class="grid"></div>
-</div>
-
-<script type="module" src="app.js"></script>
+</main>
 </body>
 </html>

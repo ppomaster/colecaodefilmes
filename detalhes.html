@@ -3,50 +3,50 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Editar Filme - MyMovies</title>
-  <link rel="stylesheet" href="style.css">
+  <title>MyMovies - Detalhes</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* pequenas adaptações para a página de detalhes - prioriza botões grandes mobile */
-    .details-wrapper { max-width: 720px; margin: 18px auto; padding:12px; }
-    .poster-large { width:100%; max-width:360px; height:auto; border-radius:10px; display:block; margin: 10px auto; }
-    .form-row-vertical { display:flex; gap:8px; flex-direction:column; }
-    .big-btn { width:100%; padding:12px; font-size:16px; border-radius:10px; margin-top:10px }
+    :root{
+      --bg:#111827; --panel:#1f2937; --accent:#3b82f6; --ok:#10b981; --danger:#ef4444; --muted:#9ca3af;
+      --dvd:#9b59b6; --bluray:#06b6d4; --digital:#3b82f6; --vhs:#f59e0b; --telegram:#1da1f2; --arquivo:#f59e0b; --outro:#6b7280;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Segoe UI,system-ui,Arial;background:linear-gradient(180deg,#071023 0%,#0b1220 100%);color:#fff;min-height:100vh}
+    .app{max-width:980px;margin:0 auto;padding:14px}
+    .header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .title{font-size:20px;font-weight:700}
+    .btn{background:var(--accent);border:none;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.08)}
+    .container-card{background:var(--panel);padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    .flex{display:flex;gap:10px;align-items:center}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:12px}
+    .movie-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-height:320px}
+    .poster{width:100%;height:320px;object-fit:cover;background:#111}
+    .card-body{padding:10px;display:flex;flex-direction:column;gap:8px}
+    .small{font-size:13px;color:var(--muted)}
+    .icons{display:flex;gap:8px;position:absolute;right:10px;top:10px;flex-direction:column}
+    .icon-btn{background:rgba(0,0,0,0.45);border-radius:8px;padding:8px;color:#fff;cursor:pointer}
+    .icon-btn.active{color:var(--ok);}
+    .form-row{display:flex;gap:8px;flex-wrap:wrap} .input,select{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff;flex:1;min-width:120px} .search-results{margin-top:10px;display:flex;flex-direction:column;gap:8px} .result-item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)} .result-item img{width:44px;height:66px;object-fit:cover;border-radius:4px} .result-item button{padding:6px 8px;border-radius:8px;background:var(--accent);border:none;color:#fff;cursor:pointer}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px} .tab{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.03);cursor:pointer;font-weight:600} .tab.active{background:var(--accent);color:#fff}
+    .counters{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px} .counter{padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);min-width:120px;text-align:center} .counter.num{font-size:20px;font-weight:700}
+    .footer{margin-top:18px;color:#9ca3af;font-size:13px;text-align:center}
+    /* responsive */ @media(max-width:640px){ .grid{grid-template-columns:1fr} .poster{height:260px} } .loading{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.18);border-top-color:#fff;animation:spin 1s linear infinite} @keyframes spin{to{transform:rotate(360deg)}} .hidden{display:none}
   </style>
 </head>
 <body>
-  <div class="details-wrapper container-card">
-    <button onclick="window.location.href='index.html'" class="btn ghost"><i class="fas fa-arrow-left"></i> Voltar</button>
-    <h2 id="title-el" style="margin-top:8px">Carregando...</h2>
-    <img id="poster-el" class="poster-large" src="https://placehold.co/360x540?text=Sem+Imagem" alt="poster">
-    <div style="margin-top:8px" id="meta-el" class="small"></div>
-
-    <div style="margin-top:12px">
-      <div class="form-row-vertical">
-        <label><input type="checkbox" id="owned-dvd"> Tenho em DVD</label>
-        <label><input type="checkbox" id="owned-bluray"> Tenho em Blu-ray</label>
-        <label><input type="checkbox" id="owned-digital"> Tenho em Arquivo Digital</label>
-        <label><input type="checkbox" id="owned-vhs"> Tenho em VHS</label>
-        <label><input type="checkbox" id="owned-telegram"> Tenho no Telegram</label>
-        <label><input type="checkbox" id="movie-watched"> Já assisti</label>
-        <label><input type="checkbox" id="movie-favorite"> Favorito</label>
-        <label>Tipo principal:
-          <select id="movie-type" class="input">
-            <option>Digital</option><option>DVD</option><option>Blu-ray</option><option>VHS</option><option>Telegram</option><option>Arquivo</option><option>Outro</option>
-          </select>
-        </label>
-        <label>Nota pessoal (1 a 10): <input id="movie-rating" type="number" min="1" max="10" class="input" /></label>
-        <label>Tags (vírgula): <input id="movie-tags" class="input" placeholder="ex: clássico, acao" /></label>
+  <div class="app">
+    <div class="header">
+      <div>
+        <a href="index.html" style="color:var(--accent);text-decoration:none"><i class="fas fa-arrow-left"></i></a>
       </div>
-
-      <div style="display:flex;gap:8px;margin-top:12px;">
-        <button id="save-btn" class="btn big-btn" style="flex:1;background:var(--accent)">Salvar</button>
-        <button id="delete-btn" class="btn big-btn" style="flex:1;background:var(--danger)">Excluir</button>
-      </div>
+      <div class="title" id="page-title">Detalhes do Filme</div>
     </div>
-    <div id="status-msg" class="small" style="margin-top:12px;color:#9ca3af"></div>
-  </div>
 
-  <script type="module" src="./detalhes.js"></script>
+    <div id="movie-details-container" class="container-card">
+      <div class="loading"></div>
+    </div>
+  </div>
+  <script type="module" src="detalhes.js"></script>
 </body>
 </html>

@@ -1,69 +1,112 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>MyMovies - Coleção</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-/* === SEU CSS AQUI (mantive igual ao seu) === */
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MyMovies - Coleção</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div class="app">
-  <!-- === TELAS DE LOGIN E APP (igual ao seu) === -->
-</div>
+  <div class="app">
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen" class="container-card" style="max-width:720px;margin:18px auto;">
+      <div class="header">
+        <div>
+          <div class="title">My<span style="color:var(--accent)">Movies</span></div>
+          <div class="small">Entre para acessar sua coleção</div>
+        </div>
+        <div id="user-actions"><!-- future: profile/status --></div>
+      </div>
 
-<!-- Firebase modular SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-  import { getFirestore, collection, query, where, onSnapshot, addDoc, doc, updateDoc, deleteDoc, serverTimestamp, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+      <div id="auth-area" class="auth">
+        <div class="form-row" style="margin-bottom:10px">
+          <input id="email" class="input" placeholder="E-mail" />
+        </div>
+        <div class="form-row" style="margin-bottom:12px">
+          <input id="password" type="password" class="input" placeholder="Senha (mín 6)" />
+        </div>
+        <div class="form-row">
+          <button id="btn-login" class="btn">Entrar</button>
+          <button id="btn-signup" class="btn ghost">Criar conta</button>
+          <button id="btn-google" class="btn ghost"><i class="fab fa-google"></i>&nbsp;Google</button>
+        </div>
+        <div id="auth-msg" class="small" style="margin-top:10px;color:#fca5a5"></div>
+      </div>
+    </div>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBu6FyItXddK1pghqaEURKaMiQTMQZlJks",
-    authDomain: "colecaodefilmes-dfa7a.firebaseapp.com",
-    projectId: "colecaodefilmes-dfa7a",
-    storageBucket: "colecaodefilmes-dfa7a.appspot.com",
-    messagingSenderId: "495818238503",
-    appId: "1:495818238503:web:814178c233d5fb304a7c02"
-  };
-  const OMDB_API_KEY = "6cbfb854";
+    <!-- APP SCREEN -->
+    <div id="app-screen" class="hidden">
+      <div class="header">
+        <div>
+          <div class="title">My<span style="color:var(--accent)">Movies</span></div>
+          <div class="small" id="user-email"></div>
+        </div>
+        <div class="flex">
+          <button id="btn-logout" class="btn ghost">Sair</button>
+        </div>
+      </div>
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  try { await enableIndexedDbPersistence(db) } catch(e){ console.warn('Sem IndexedDB:', e.message) }
+      <div class="container-card">
+        <div class="flex" style="justify-content:space-between;align-items:center;gap:16px">
+          <div style="flex:1;min-width:220px;">
+            <div class="small">Buscar no OMDb (títulos com espaços OK)</div>
+            <div class="form-row" style="margin-top:8px">
+              <input id="search-title" class="input" placeholder="Digite o título e toque em Buscar..." />
+              <button id="search-btn" class="btn">Buscar</button>
+            </div>
+            <div id="search-results" class="search-results"></div>
+          </div>
 
-  /* === TODO SEU CÓDIGO JS DE LOGIN, ADD, RENDER, ETC (igual ao que você colou) === */
+          <div style="min-width:220px">
+            <div class="small">Contadores</div>
+            <div class="counters" style="margin-top:8px">
+              <div class="counter"><div class="num" id="count-all">0</div><div class="small">Total</div></div>
+              <div class="counter"><div class="num" id="count-dvd">0</div><div class="small">DVD</div></div>
+              <div class="counter"><div class="num" id="count-digital">0</div><div class="small">Digital</div></div>
+              <div class="counter"><div class="num" id="count-vhs">0</div><div class="small">VHS</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  // helper para mensagens
-  function showMsg(text, type='success') {
-    console.log('MSG:', text);
-    const prev = document.querySelector('.__quick_msg');
-    if (prev) prev.remove();
-    const el = document.createElement('div');
-    el.className = '__quick_msg container-card';
-    el.style.position = 'fixed';
-    el.style.right = '12px';
-    el.style.bottom = '12px';
-    el.style.zIndex = 9999;
-    el.style.padding = '10px 14px';
-    el.style.background = type === 'success'
-      ? 'rgba(16,185,129,0.2)'
-      : 'rgba(239,68,68,0.2)';
-    el.style.color = '#fff';
-    el.textContent = text;
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(), 3000);
-  }
+      <div class="container-card" style="margin-top:12px">
+        <div class="small">Adicionar manualmente (campos opcionais)</div>
+        <div class="form-row" style="margin-top:8px">
+          <input id="manual-title" class="input" placeholder="Título" />
+          <input id="manual-year" class="input" placeholder="Ano (opcional)" />
+          <select id="manual-type" class="input">
+            <option value="DVD">DVD</option>
+            <option value="Blu-ray">Blu-ray</option>
+            <option value="Digital">Digital</option>
+            <option value="VHS">VHS</option>
+            <option value="Telegram">Telegram</option>
+            <option value="Arquivo">Arquivo</option>
+            <option value="Outro">Outro</option>
+          </select>
+          <button id="manual-add-btn" class="btn" style="min-width:120px">Adicionar</button>
+        </div>
+      </div>
 
-  // função auxiliar para evitar XSS em inputs editáveis
-  function escapeHtml(str="") {
-    return str.replace(/[&<>'"]/g, t => ({
-      "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;"
-    }[t]));
-  }
-</script>
+      <div style="margin-top:12px">
+        <div class="tabs" id="tabs">
+          <div class="tab active" data-filter="all">Todos</div>
+          <div class="tab" data-filter="DVD">DVD</div>
+          <div class="tab" data-filter="Blu-ray">Blu-ray</div>
+          <div class="tab" data-filter="Digital">Digital</div>
+          <div class="tab" data-filter="VHS">VHS</div>
+          <div class="tab" data-filter="Telegram">Telegram</div>
+          <div class="tab" data-filter="watched">Assistidos</div>
+          <div class="tab" data-filter="favorite">Favoritos</div>
+        </div>
+
+        <div id="collection" class="grid" style="margin-top:12px"></div>
+      </div>
+
+      <div class="footer">App com Firebase Auth + Firestore. Busca via OMDb.</div>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
 </body>
 </html>

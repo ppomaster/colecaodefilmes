@@ -441,30 +441,30 @@
             <div class="tab" data-filter="favorite">Favoritos</div>
         </div>
         <div id="movie-collection" class="movies-grid">
-            </div>
+            <!-- Os cards dos filmes serão inseridos aqui -->
+        </div>
     </div>
 </div>
 
+<!-- SDKs do Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
 <script>
-    // --- PASSO 1: CONFIGURAÇÃO DO FIREBASE ---
-    // Cole aqui o objeto de configuração do seu projeto Firebase.
+    // --- SUAS CONFIGURAÇÕES (INSERIDAS AUTOMATICAMENTE) ---
     const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "SEU_AUTH_DOMAIN",
-      projectId: "SEU_PROJECT_ID",
-      storageBucket: "SEU_STORAGE_BUCKET",
-      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
-      appId: "SEU_APP_ID"
+      apiKey: "AIzaSyBu6FyItXddK1pghqaEURKaMiQTMQZlJks",
+      authDomain: "colecaodefilmes-dfa7a.firebaseapp.com",
+      projectId: "colecaodefilmes-dfa7a",
+      storageBucket: "colecaodefilmes-dfa7a.appspot.com",
+      messagingSenderId: "495818238503",
+      // O appId é gerado automaticamente pelo Firebase, um valor genérico é adicionado.
+      // Se houver problemas, copie o objeto de configuração completo do seu console Firebase.
+      appId: "1:495818238503:web:0f1e2d3c4b5a6987123456" 
     };
     
-    // --- PASSO 2: CHAVE DA API OMDb ---
-    // Obtenha uma chave grátis em: https://www.omdbapi.com/apikey.aspx
-    const OMDB_API_KEY = "SUA_CHAVE_OMDB";
-
+    const OMDB_API_KEY = "6cbfb854";
 
     // --- INICIALIZAÇÃO DO FIREBASE ---
     firebase.initializeApp(firebaseConfig);
@@ -498,7 +498,7 @@
             loginScreen.classList.add('hidden');
             appScreen.classList.remove('hidden');
             appScreen.classList.add('fade-in');
-            userEmailSpan.textContent = user.email;
+            userEmailSpan.textContent = user.displayName || user.email;
             loadMovies(); // Carrega os filmes do usuário logado
         } else {
             currentUser = null;
@@ -557,9 +557,9 @@
     function loadMovies() {
         if (!currentUser) return;
         
-        // Cria uma "escuta" em tempo real para a coleção de filmes do usuário
         unsubscribeMoviesListener = db.collection('movies')
-            .where('userId', '==', currentUser.uid) // ESSENCIAL: Filtra filmes apenas deste usuário
+            .where('userId', '==', currentUser.uid)
+            .orderBy('createdAt', 'desc') // Ordena pelos mais recentes primeiro
             .onSnapshot(snapshot => {
                 localMoviesCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderCollection();
@@ -571,11 +571,24 @@
 
     async function addMovie(movieData) {
         if (!currentUser) return;
+        
+        // Verifica se o filme (pelo imdbID) já existe na coleção do usuário
+        const query = db.collection('movies')
+            .where('userId', '==', currentUser.uid)
+            .where('imdbID', '==', movieData.imdbID);
+
+        const existing = await query.get();
+
+        if (movieData.imdbID && !existing.empty) {
+             showMessage(`"${movieData.Title}" já está na sua coleção.`, 'error');
+             return;
+        }
+
         try {
             const movieToAdd = {
                 ...movieData,
-                userId: currentUser.uid, // Adiciona o ID do usuário ao filme
-                createdAt: firebase.firestore.FieldValue.serverTimestamp() // Adiciona data de criação
+                userId: currentUser.uid, 
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
             await db.collection('movies').add(movieToAdd);
             showMessage(`"${movieData.Title}" adicionado à coleção!`, 'success');
@@ -590,7 +603,6 @@
             try {
                 await db.collection('movies').doc(id).delete();
                 showMessage("Filme removido com sucesso.", 'success');
-                // A renderização é automática por causa do onSnapshot
             } catch (error) {
                 console.error("Erro ao remover filme: ", error);
                 showMessage("Ocorreu um erro ao remover o filme.", 'error');
@@ -606,7 +618,6 @@
                 await movieRef.update({
                     [property]: !movie[property]
                 });
-                // A renderização também é automática aqui
             } catch (error) {
                 console.error(`Erro ao atualizar ${property}: `, error);
                 showMessage(`Não foi possível atualizar o filme.`, 'error');
@@ -616,13 +627,15 @@
 
     // --- RENDERIZAÇÃO E UI ---
     function renderCollection() {
-        movieCollection.innerHTML = '';
         const filteredMovies = localMoviesCache.filter(m => {
             if (currentFilter === 'all') return true;
             if (currentFilter === 'watched') return m.Watched;
             if (currentFilter === 'favorite') return m.Favorite;
             return m.Type === currentFilter;
-        }).sort((a,b) => a.Title.localeCompare(b.Title));
+        });
+        
+        // Limpa a coleção atual antes de renderizar
+        movieCollection.innerHTML = '';
 
         if (filteredMovies.length === 0) {
             movieCollection.innerHTML = `
@@ -663,11 +676,6 @@
         e.preventDefault();
         const title = document.getElementById('movie-title-input').value;
         if (!title) return;
-        
-        if (OMDB_API_KEY === "SUA_CHAVE_OMDB") {
-            showMessage("Configure sua chave da API OMDb no código para buscar filmes.", "error");
-            return;
-        }
 
         const searchButton = document.getElementById('search-button');
         searchButton.disabled = true;
@@ -679,7 +687,8 @@
             const data = await response.json();
 
             if (data.Response === "True") {
-                data.Search.forEach(movie => {
+                movieResults.innerHTML = ''; // Limpa resultados anteriores
+                data.Search.slice(0, 5).forEach(movie => { // Mostra no máximo 5 resultados
                     const resultCard = document.createElement('div');
                     resultCard.style.cssText = 'display:flex; align-items:center; gap:15px; background:var(--card-bg); padding:10px; border-radius:8px; margin-bottom:10px;';
                     resultCard.innerHTML = `
@@ -695,9 +704,10 @@
                             imdbID: movie.imdbID,
                             Watched: false, 
                             Favorite: false, 
-                            Type: 'Digital' // Padrão ao adicionar da busca
+                            Type: 'Digital'
                         });
                         movieResults.innerHTML = '';
+                        document.getElementById('movie-title-input').value = '';
                     };
                     movieResults.appendChild(resultCard);
                 });
@@ -723,6 +733,7 @@
             Title: titleInput.value, 
             Year: yearInput.value || '', 
             Poster: '',
+            imdbID: 'manual_' + Date.now(), // ID único para filmes manuais
             Watched: false, 
             Favorite: false, 
             Type: document.getElementById('manual-type').value
@@ -761,7 +772,7 @@
         messageArea.className = `message ${type}`;
         setTimeout(() => {
             messageArea.classList.add('hidden');
-        }, 5000);
+        }, 4000);
     }
 
     function showAuthMessage(msg, type = 'error') {
@@ -788,18 +799,15 @@
 
     function translateAuthError(code) {
         switch (code) {
-            case 'auth/wrong-password':
-                return 'Senha incorreta. Tente novamente.';
-            case 'auth/user-not-found':
-                return 'Nenhum usuário encontrado com este e-mail.';
-            case 'auth/email-already-in-use':
-                return 'Este e-mail já está em uso por outra conta.';
-            case 'auth/weak-password':
-                return 'A senha deve ter pelo menos 6 caracteres.';
-            default:
-                return 'Ocorreu um erro. Tente novamente mais tarde.';
+            case 'auth/wrong-password': return 'Senha incorreta. Tente novamente.';
+            case 'auth/user-not-found': return 'Nenhum usuário encontrado com este e-mail.';
+            case 'auth/email-already-in-use': return 'Este e-mail já está em uso por outra conta.';
+            case 'auth/weak-password': return 'A senha deve ter pelo menos 6 caracteres.';
+            case 'auth/popup-closed-by-user': return 'A janela de login foi fechada antes da conclusão.';
+            default: return 'Ocorreu um erro de autenticação. Tente novamente.';
         }
     }
 </script>
 </body>
 </html>
+

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editar Filme</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Editar Filme</h1>
+    <button id="backBtn">⬅ Voltar</button>
+  </header>
+
+  <main>
+    <div class="edit-container">
+      <img id="moviePoster" src="" alt="Poster do Filme" class="details-poster"/>
+      <div class="edit-fields">
+        <label>Título</label>
+        <input id="editTitle" type="text" />
+
+        <label>Ano</label>
+        <input id="editYear" type="text" />
+
+        <label>Tipos (marque todos que possui)</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" value="DVD" /> DVD</label>
+          <label><input type="checkbox" value="Blu-ray" /> Blu-ray</label>
+          <label><input type="checkbox" value="Digital" /> Digital</label>
+          <label><input type="checkbox" value="VHS" /> VHS</label>
+          <label><input type="checkbox" value="Telegram" /> Telegram</label>
+          <label><input type="checkbox" value="Arquivo" /> Arquivo</label>
+          <label><input type="checkbox" value="Outro" /> Outro</label>
+        </div>
+
+        <label>Tags</label>
+        <input id="editTags" type="text" placeholder="Tags separadas por vírgula" />
+
+        <label>Sinopse</label>
+        <textarea id="editSynopsis" rows="6"></textarea>
+
+        <label>Assistido <input type="checkbox" id="editWatched" /></label>
+        <label>Favorito <input type="checkbox" id="editFavorite" /></label>
+
+        <button id="saveBtn" class="btn">Salvar Alterações</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="editar.js"></script>
+</body>
+</html>

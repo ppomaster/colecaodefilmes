@@ -1,71 +1,65 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-<title>MyMovies - Coleção</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>MyMovies</title>
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-<div class="app">
-  <!-- LOGIN -->
-  <div id="login-screen" class="container-card" style="max-width:400px;margin:20px auto;">
-    <div class="header">
-      <div><div class="title">My<span style="color:var(--accent)">Movies</span></div><div class="small">Entre para acessar sua coleção</div></div>
+<div id="login-screen" class="screen">
+  <div class="container-card login-card">
+    <h1 class="title">My<span class="accent">Movies</span></h1>
+    <p class="small">Entre para acessar sua coleção</p>
+
+    <input id="email" class="input" type="email" placeholder="E-mail">
+    <input id="password" class="input" type="password" placeholder="Senha">
+
+    <div class="form-row">
+      <button id="btn-login" class="btn">Entrar</button>
+      <button id="btn-signup" class="btn ghost">Criar conta</button>
     </div>
-    <div id="auth-area">
-      <div class="form-row">
-        <input id="email" class="input" placeholder="E-mail" />
-      </div>
-      <div class="form-row">
-        <input id="password" type="password" class="input" placeholder="Senha" />
-      </div>
-      <div class="form-row">
-        <button id="btn-login" class="btn">Entrar</button>
-        <button id="btn-signup" class="btn ghost">Criar conta</button>
-        <button id="btn-google" class="btn ghost"><i class="fab fa-google"></i>&nbsp;Google</button>
-      </div>
-      <div id="auth-msg" class="small" style="margin-top:10px;color:#fca5a5"></div>
+    <div class="form-row">
+      <button id="btn-google" class="btn ghost"><i class="fab fa-google"></i> Google</button>
     </div>
+
+    <p id="auth-msg" class="small auth-msg"></p>
+  </div>
+</div>
+
+<div id="app-screen" class="screen hidden">
+  <header class="header">
+    <h1 class="title">My<span class="accent">Movies</span></h1>
+    <div class="flex">
+      <span id="user-email" class="small"></span>
+      <button id="btn-logout" class="btn ghost">Sair</button>
+    </div>
+  </header>
+
+  <div class="container-card search-card">
+    <input id="search-title" class="input" placeholder="Digite título para buscar...">
+    <button id="search-btn" class="btn">Buscar</button>
+    <div id="search-results" class="search-results"></div>
   </div>
 
-  <!-- APP -->
-  <div id="app-screen" class="hidden">
-    <div class="header">
-      <div>
-        <div class="title">My<span style="color:var(--accent)">Movies</span></div>
-        <div class="small" id="user-email"></div>
-      </div>
-      <div class="flex">
-        <button id="btn-logout" class="btn ghost">Sair</button>
-      </div>
-    </div>
+  <div class="container-card manual-card">
+    <h2 class="small">Adicionar manualmente</h2>
+    <input id="manual-title" class="input" placeholder="Título">
+    <input id="manual-year" class="input" placeholder="Ano (opcional)">
+    <select id="manual-type" class="input">
+      <option value="DVD">DVD</option>
+      <option value="Blu-ray">Blu-ray</option>
+      <option value="Digital">Digital</option>
+      <option value="VHS">VHS</option>
+      <option value="Telegram">Telegram</option>
+      <option value="Arquivo">Arquivo</option>
+      <option value="Outro">Outro</option>
+    </select>
+    <button id="manual-add-btn" class="btn">Adicionar</button>
+  </div>
 
-    <div class="container-card">
-      <div class="form-row" style="margin-bottom:8px">
-        <input id="search-title" class="input" placeholder="Digite título para buscar..." />
-        <button id="search-btn" class="btn">Buscar</button>
-      </div>
-      <div id="search-results" class="search-results"></div>
-    </div>
-
-    <div class="container-card" style="margin-top:12px">
-      <div class="small">Adicionar manualmente</div>
-      <div class="form-row" style="margin-top:8px">
-        <input id="manual-title" class="input" placeholder="Título" />
-        <input id="manual-year" class="input" placeholder="Ano (opcional)" />
-        <div class="form-checkboxes" style="display:flex;flex-wrap:wrap;gap:6px">
-          <label><input type="checkbox" value="DVD"> DVD</label>
-          <label><input type="checkbox" value="Blu-ray"> Blu-ray</label>
-          <label><input type="checkbox" value="Digital"> Digital</label>
-          <label><input type="checkbox" value="VHS"> VHS</label>
-          <label><input type="checkbox" value="Telegram"> Telegram</label>
-        </div>
-        <button id="manual-add-btn" class="btn" style="min-width:120px">Adicionar</button>
-      </div>
-    </div>
-
+  <div class="tabs-container">
     <div class="tabs" id="tabs">
       <div class="tab active" data-filter="all">Todos</div>
       <div class="tab" data-filter="DVD">DVD</div>
@@ -76,11 +70,15 @@
       <div class="tab" data-filter="watched">Assistidos</div>
       <div class="tab" data-filter="favorite">Favoritos</div>
     </div>
-
-    <div id="collection" class="grid" style="margin-top:12px"></div>
-
-    <div class="footer">App local + Firebase Auth + Firestore. Busca via TMDb em português.</div>
+    <div class="counters">
+      <div class="counter">Total: <span id="count-all">0</span></div>
+      <div class="counter">DVD: <span id="count-dvd">0</span></div>
+      <div class="counter">Digital: <span id="count-digital">0</span></div>
+      <div class="counter">VHS: <span id="count-vhs">0</span></div>
+    </div>
   </div>
+
+  <div id="collection" class="grid"></div>
 </div>
 
 <script type="module" src="app.js"></script>

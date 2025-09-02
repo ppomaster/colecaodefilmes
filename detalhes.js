@@ -1,52 +1,91 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MyMovies - Detalhes</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root{
-      --bg:#111827; --panel:#1f2937; --accent:#3b82f6; --ok:#10b981; --danger:#ef4444; --muted:#9ca3af;
-      --dvd:#9b59b6; --bluray:#06b6d4; --digital:#3b82f6; --vhs:#f59e0b; --telegram:#1da1f2; --arquivo:#f59e0b; --outro:#6b7280;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,Segoe UI,system-ui,Arial;background:linear-gradient(180deg,#071023 0%,#0b1220 100%);color:#fff;min-height:100vh}
-    .app{max-width:980px;margin:0 auto;padding:14px}
-    .header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-    .title{font-size:20px;font-weight:700}
-    .btn{background:var(--accent);border:none;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
-    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.08)}
-    .container-card{background:var(--panel);padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
-    .flex{display:flex;gap:10px;align-items:center}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:12px}
-    .movie-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-height:320px}
-    .poster{width:100%;height:320px;object-fit:cover;background:#111}
-    .card-body{padding:10px;display:flex;flex-direction:column;gap:8px}
-    .small{font-size:13px;color:var(--muted)}
-    .icons{display:flex;gap:8px;position:absolute;right:10px;top:10px;flex-direction:column}
-    .icon-btn{background:rgba(0,0,0,0.45);border-radius:8px;padding:8px;color:#fff;cursor:pointer}
-    .icon-btn.active{color:var(--ok);}
-    .form-row{display:flex;gap:8px;flex-wrap:wrap} .input,select{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff;flex:1;min-width:120px} .search-results{margin-top:10px;display:flex;flex-direction:column;gap:8px} .result-item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)} .result-item img{width:44px;height:66px;object-fit:cover;border-radius:4px} .result-item button{padding:6px 8px;border-radius:8px;background:var(--accent);border:none;color:#fff;cursor:pointer}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px} .tab{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.03);cursor:pointer;font-weight:600} .tab.active{background:var(--accent);color:#fff}
-    .counters{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px} .counter{padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);min-width:120px;text-align:center} .counter.num{font-size:20px;font-weight:700}
-    .footer{margin-top:18px;color:#9ca3af;font-size:13px;text-align:center}
-    /* responsive */ @media(max-width:640px){ .grid{grid-template-columns:1fr} .poster{height:260px} } .loading{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.18);border-top-color:#fff;animation:spin 1s linear infinite} @keyframes spin{to{transform:rotate(360deg)}} .hidden{display:none}
-  </style>
-</head>
-<body>
-  <div class="app">
-    <div class="header">
-      <div>
-        <a href="index.html" style="color:var(--accent);text-decoration:none"><i class="fas fa-arrow-left"></i></a>
-      </div>
-      <div class="title" id="page-title">Detalhes do Filme</div>
-    </div>
+// detalhes.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { firebaseConfig } from './config.js'; 
 
-    <div id="movie-details-container" class="container-card">
-      <div class="loading"></div>
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const container = document.getElementById('movie-details-container');
+const pageTitle = document.getElementById('page-title');
+
+const urlParams = new URLSearchParams(window.location.search);
+const movieId = urlParams.get('id');
+
+if (!movieId) {
+  container.innerHTML = 'ID do filme não encontrado.';
+} else {
+  loadMovieDetails(movieId);
+}
+
+async function loadMovieDetails(id) {
+  const docRef = doc(db, 'movies', id);
+  try {
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const movie = { id: docSnap.id, ...docSnap.data() };
+      renderDetailsForm(movie);
+    } else {
+      container.innerHTML = 'Filme não encontrado.';
+    }
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = 'Erro ao carregar os detalhes.';
+  }
+}
+
+function renderDetailsForm(movie) {
+  pageTitle.textContent = movie.Title || 'Detalhes do Filme';
+  container.innerHTML = `
+    <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+      <img src="${movie.Poster || 'https://placehold.co/180x270?text='+encodeURIComponent(movie.Title)}" style="width:180px;height:270px;object-fit:cover;border-radius:8px">
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:24px">${movie.Title} <span class="small">(${movie.Year||''})</span></div>
+        <div class="small" style="margin-top:6px">Diretor: ${movie.Director || 'N/A'} | Gênero: ${movie.Genre || 'N/A'}</div>
+        <div class="small" style="margin-top:8px">${movie.Plot || 'Sinopse não disponível.'}</div>
+        
+        <div style="margin-top:16px" class="form-row">
+          <select id="edit-type" class="input" style="min-width:140px">
+            <option value="Digital" ${movie.Type === 'Digital' ? 'selected' : ''}>Digital</option>
+            <option value="DVD" ${movie.Type === 'DVD' ? 'selected' : ''}>DVD</option>
+            <option value="Blu-ray" ${movie.Type === 'Blu-ray' ? 'selected' : ''}>Blu-ray</option>
+            <option value="VHS" ${movie.Type === 'VHS' ? 'selected' : ''}>VHS</option>
+            <option value="Telegram" ${movie.Type === 'Telegram' ? 'selected' : ''}>Telegram</option>
+            <option value="Arquivo" ${movie.Type === 'Arquivo' ? 'selected' : ''}>Arquivo</option>
+            <option value="Outro" ${movie.Type === 'Outro' ? 'selected' : ''}>Outro</option>
+          </select>
+          <input id="edit-rating" class="input" type="number" step="0.5" min="1" max="10" placeholder="Nota (1-10)" value="${movie.Rating || ''}" />
+          <input id="edit-tags" class="input" placeholder="Tags (vírgula)" value="${(movie.Tags||[]).join(', ')}" />
+        </div>
+        <div style="margin-top:8px;display:flex;gap:12px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:8px"><input id="edit-watched" type="checkbox" ${movie.Watched ? 'checked' : ''}> Assistido</label>
+          <label style="display:flex;align-items:center;gap:8px"><input id="edit-favorite" type="checkbox" ${movie.Favorite ? 'checked' : ''}> Favorito</label>
+        </div>
+        
+        <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+          <button id="cancel-edit" class="btn ghost">Cancelar</button>
+          <button id="save-edit" class="btn">Salvar Alterações</button>
+        </div>
+      </div>
     </div>
-  </div>
-  <script type="module" src="detalhes.js"></script>
-</body>
-</html>
+  `;
+
+  document.getElementById('cancel-edit').onclick = () => window.history.back();
+  document.getElementById('save-edit').onclick = async () => {
+    const updatedMovie = {
+      Type: document.getElementById('edit-type').value,
+      Rating: Number(document.getElementById('edit-rating').value) || null,
+      Tags: document.getElementById('edit-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+      Watched: document.getElementById('edit-watched').checked,
+      Favorite: document.getElementById('edit-favorite').checked
+    };
+    try {
+      await updateDoc(doc(db, 'movies', movie.id), updatedMovie);
+      alert('Filme atualizado com sucesso!');
+      window.history.back();
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar as alterações.');
+    }
+  };
+}

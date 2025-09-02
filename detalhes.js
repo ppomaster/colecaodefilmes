@@ -1,104 +1,52 @@
-// detalhes.js - edição completa de um filme (detalhes.html)
-import { auth, db } from './firebase.js';
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-import { doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MyMovies - Detalhes</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{
+      --bg:#111827; --panel:#1f2937; --accent:#3b82f6; --ok:#10b981; --danger:#ef4444; --muted:#9ca3af;
+      --dvd:#9b59b6; --bluray:#06b6d4; --digital:#3b82f6; --vhs:#f59e0b; --telegram:#1da1f2; --arquivo:#f59e0b; --outro:#6b7280;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Segoe UI,system-ui,Arial;background:linear-gradient(180deg,#071023 0%,#0b1220 100%);color:#fff;min-height:100vh}
+    .app{max-width:980px;margin:0 auto;padding:14px}
+    .header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .title{font-size:20px;font-weight:700}
+    .btn{background:var(--accent);border:none;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.08)}
+    .container-card{background:var(--panel);padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    .flex{display:flex;gap:10px;align-items:center}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:12px}
+    .movie-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));border-radius:10px;overflow:hidden;display:flex;flex-direction:column;min-height:320px}
+    .poster{width:100%;height:320px;object-fit:cover;background:#111}
+    .card-body{padding:10px;display:flex;flex-direction:column;gap:8px}
+    .small{font-size:13px;color:var(--muted)}
+    .icons{display:flex;gap:8px;position:absolute;right:10px;top:10px;flex-direction:column}
+    .icon-btn{background:rgba(0,0,0,0.45);border-radius:8px;padding:8px;color:#fff;cursor:pointer}
+    .icon-btn.active{color:var(--ok);}
+    .form-row{display:flex;gap:8px;flex-wrap:wrap} .input,select{padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:#fff;flex:1;min-width:120px} .search-results{margin-top:10px;display:flex;flex-direction:column;gap:8px} .result-item{display:flex;gap:10px;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)} .result-item img{width:44px;height:66px;object-fit:cover;border-radius:4px} .result-item button{padding:6px 8px;border-radius:8px;background:var(--accent);border:none;color:#fff;cursor:pointer}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px} .tab{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.03);cursor:pointer;font-weight:600} .tab.active{background:var(--accent);color:#fff}
+    .counters{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px} .counter{padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);min-width:120px;text-align:center} .counter.num{font-size:20px;font-weight:700}
+    .footer{margin-top:18px;color:#9ca3af;font-size:13px;text-align:center}
+    /* responsive */ @media(max-width:640px){ .grid{grid-template-columns:1fr} .poster{height:260px} } .loading{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.18);border-top-color:#fff;animation:spin 1s linear infinite} @keyframes spin{to{transform:rotate(360deg)}} .hidden{display:none}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div>
+        <a href="index.html" style="color:var(--accent);text-decoration:none"><i class="fas fa-arrow-left"></i></a>
+      </div>
+      <div class="title" id="page-title">Detalhes do Filme</div>
+    </div>
 
-const params = new URLSearchParams(location.search);
-const movieId = params.get('id');
-if (!movieId) {
-  alert('ID do filme ausente. Voltando.');
-  location.href = 'index.html';
-}
-
-const titleEl = document.getElementById('title-el');
-const posterEl = document.getElementById('poster-el');
-const metaEl = document.getElementById('meta-el');
-
-const chkDVD = document.getElementById('owned-dvd');
-const chkBlu = document.getElementById('owned-bluray');
-const chkDigital = document.getElementById('owned-digital');
-const chkVHS = document.getElementById('owned-vhs');
-const chkTelegram = document.getElementById('owned-telegram');
-const chkWatched = document.getElementById('movie-watched');
-const chkFavorite = document.getElementById('movie-favorite');
-const selType = document.getElementById('movie-type');
-const inpRating = document.getElementById('movie-rating');
-const inpTags = document.getElementById('movie-tags');
-const saveBtn = document.getElementById('save-btn');
-const deleteBtn = document.getElementById('delete-btn');
-const statusMsg = document.getElementById('status-msg');
-
-let currentUser = null;
-let currentMovie = null;
-
-onAuthStateChanged(auth, async (user) => {
-  currentUser = user;
-  if (!user) {
-    alert('Faça login para editar o filme. Redirecionando...');
-    location.href = 'index.html';
-    return;
-  }
-  await loadMovie();
-});
-
-async function loadMovie() {
-  try {
-    const ref = doc(db, 'movies', movieId);
-    const snap = await getDoc(ref);
-    if (!snap.exists()) { alert('Filme não encontrado.'); location.href = 'index.html'; return; }
-    const m = snap.data();
-    if (m.userId !== currentUser.uid) { alert('Você não tem permissão para editar este filme.'); location.href = 'index.html'; return; }
-    currentMovie = { id: snap.id, ...m };
-    titleEl.textContent = currentMovie.Title || '—';
-    posterEl.src = currentMovie.Poster || 'https://placehold.co/360x540?text=Sem+Imagem';
-    metaEl.textContent = `${currentMovie.Year || ''} • ${currentMovie.Genre || ''}`;
-    // populate fields (booleans may be undefined)
-    chkDVD.checked = !!currentMovie.OwnedDVD;
-    chkBlu.checked = !!currentMovie.OwnedBluRay;
-    chkDigital.checked = !!currentMovie.OwnedDigital;
-    chkVHS.checked = !!currentMovie.OwnedVHS;
-    chkTelegram.checked = !!currentMovie.OwnedTelegram;
-    chkWatched.checked = !!currentMovie.Watched;
-    chkFavorite.checked = !!currentMovie.Favorite;
-    selType.value = currentMovie.Type || 'Digital';
-    inpRating.value = currentMovie.Rating || '';
-    inpTags.value = (currentMovie.Tags || []).join(', ');
-  } catch (err) {
-    console.error(err); alert('Erro ao carregar filme.'); location.href = 'index.html';
-  }
-}
-
-saveBtn.addEventListener('click', async () => {
-  if (!currentUser || !currentMovie) return;
-  statusMsg.textContent = 'Salvando...';
-  saveBtn.disabled = true;
-  try {
-    const payload = {
-      OwnedDVD: !!chkDVD.checked,
-      OwnedBluRay: !!chkBlu.checked,
-      OwnedDigital: !!chkDigital.checked,
-      OwnedVHS: !!chkVHS.checked,
-      OwnedTelegram: !!chkTelegram.checked,
-      Watched: !!chkWatched.checked,
-      Favorite: !!chkFavorite.checked,
-      Type: selType.value || 'Digital',
-      Rating: inpRating.value ? Number(inpRating.value) : null,
-      Tags: inpTags.value.split(',').map(t=>t.trim()).filter(Boolean)
-    };
-    await updateDoc(doc(db, 'movies', movieId), payload);
-    statusMsg.textContent = 'Alterações salvas.';
-  } catch (err) {
-    console.error(err); statusMsg.textContent = 'Erro ao salvar.';
-  } finally { saveBtn.disabled = false; setTimeout(()=>statusMsg.textContent='',2000); }
-});
-
-deleteBtn.addEventListener('click', async () => {
-  if (!confirm('Excluir permanentemente este filme?')) return;
-  try {
-    await deleteDoc(doc(db, 'movies', movieId));
-    alert('Filme excluído.');
-    location.href = 'index.html';
-  } catch (err) {
-    console.error(err); alert('Erro ao excluir.');
-  }
-});
+    <div id="movie-details-container" class="container-card">
+      <div class="loading"></div>
+    </div>
+  </div>
+  <script type="module" src="detalhes.js"></script>
+</body>
+</html>

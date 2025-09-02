@@ -1,34 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Editar Filme</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Editar Filme - MyMovies</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* pequenas adaptações para a página de detalhes - prioriza botões grandes mobile */
+    .details-wrapper { max-width: 720px; margin: 18px auto; padding:12px; }
+    .poster-large { width:100%; max-width:360px; height:auto; border-radius:10px; display:block; margin: 10px auto; }
+    .form-row-vertical { display:flex; gap:8px; flex-direction:column; }
+    .big-btn { width:100%; padding:12px; font-size:16px; border-radius:10px; margin-top:10px }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h2 id="titulo"></h2>
-    <img id="poster" class="poster-detalhes" alt="Poster">
+  <div class="details-wrapper container-card">
+    <button onclick="window.location.href='index.html'" class="btn ghost"><i class="fas fa-arrow-left"></i> Voltar</button>
+    <h2 id="title-el" style="margin-top:8px">Carregando...</h2>
+    <img id="poster-el" class="poster-large" src="https://placehold.co/360x540?text=Sem+Imagem" alt="poster">
+    <div style="margin-top:8px" id="meta-el" class="small"></div>
 
-    <div class="opcoes">
-      <label><input type="checkbox" id="assistido"> Já assisti</label>
-      <label><input type="checkbox" id="dvd"> Tenho em DVD</label>
-      <label><input type="checkbox" id="vhs"> Tenho em VHS</label>
-      <label><input type="checkbox" id="digital"> Tenho em Digital</label>
-      <label><input type="checkbox" id="telegram"> Tenho no Telegram</label>
-      <label>Minha Nota:
-        <input type="number" id="nota" min="0" max="10" step="0.5">
-      </label>
+    <div style="margin-top:12px">
+      <div class="form-row-vertical">
+        <label><input type="checkbox" id="owned-dvd"> Tenho em DVD</label>
+        <label><input type="checkbox" id="owned-bluray"> Tenho em Blu-ray</label>
+        <label><input type="checkbox" id="owned-digital"> Tenho em Arquivo Digital</label>
+        <label><input type="checkbox" id="owned-vhs"> Tenho em VHS</label>
+        <label><input type="checkbox" id="owned-telegram"> Tenho no Telegram</label>
+        <label><input type="checkbox" id="movie-watched"> Já assisti</label>
+        <label><input type="checkbox" id="movie-favorite"> Favorito</label>
+        <label>Tipo principal:
+          <select id="movie-type" class="input">
+            <option>Digital</option><option>DVD</option><option>Blu-ray</option><option>VHS</option><option>Telegram</option><option>Arquivo</option><option>Outro</option>
+          </select>
+        </label>
+        <label>Nota pessoal (1 a 10): <input id="movie-rating" type="number" min="1" max="10" class="input" /></label>
+        <label>Tags (vírgula): <input id="movie-tags" class="input" placeholder="ex: clássico, acao" /></label>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button id="save-btn" class="btn big-btn" style="flex:1;background:var(--accent)">Salvar</button>
+        <button id="delete-btn" class="btn big-btn" style="flex:1;background:var(--danger)">Excluir</button>
+      </div>
     </div>
-
-    <button id="salvar">💾 Salvar Alterações</button>
-    <a href="index.html" class="voltar">⬅ Voltar</a>
+    <div id="status-msg" class="small" style="margin-top:12px;color:#9ca3af"></div>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
-  <script src="firebase.js"></script>
-  <script src="detalhes.js"></script>
+  <script type="module" src="./detalhes.js"></script>
 </body>
 </html>

@@ -372,11 +372,14 @@
 <div id="login-screen">
     <div class="login-container fade-in">
         <div class="app-logo"><h1>My<span>Movies</span></h1></div>
+        <div id="auth-message-area" class="message hidden">
+             <span id="auth-message-text"></span>
+        </div>
         <div class="login-form">
             <h2>Acesse sua coleção</h2>
             <form id="email-login-form">
-                <div class="form-group"><input type="email" id="email" class="form-control" placeholder="E-mail" required value="teste@exemplo.com"></div>
-                <div class="form-group"><input type="password" id="password" class="form-control" placeholder="Senha" required value="senhateste"></div>
+                <div class="form-group"><input type="email" id="email" class="form-control" placeholder="E-mail" required></div>
+                <div class="form-group"><input type="password" id="password" class="form-control" placeholder="Senha" required></div>
                 <button type="submit" id="login-button" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Entrar</button>
                 <button type="button" id="signup-button" class="btn btn-danger" style="background:var(--success-color);">Criar conta</button>
             </form>
@@ -391,7 +394,7 @@
         <div class="header-content">
             <div class="app-logo"><h1>My<span>Movies</span></h1></div>
             <div class="user-info">
-                <span id="user-email">usuário@exemplo.com</span>
+                <span id="user-email"></span>
                 <button id="logout-button" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Sair</button>
             </div>
         </div>
@@ -404,7 +407,7 @@
         </div>
 
         <section class="search-section">
-            <h2><i class="fas fa-search"></i> Buscar e Adicionar Filme</h2>
+            <h2><i class="fas fa-search"></i> Buscar e Adicionar Filme (OMDb API)</h2>
             <form id="search-form" class="search-form">
                 <input type="text" id="movie-title-input" class="form-control" placeholder="Digite o título do filme...">
                 <button type="submit" id="search-button" class="btn btn-primary">Buscar</button>
@@ -416,10 +419,12 @@
              <h2><i class="fas fa-plus-circle"></i> Adicionar Manualmente</h2>
             <form id="manual-add-form" class="manual-add-form">
                 <input type="text" id="manual-title" class="form-control" placeholder="Título" required>
-                <input type="number" id="manual-year" class="form-control" placeholder="Ano">
+                <input type="number" id="manual-year" class="form-control" placeholder="Ano (ex: 1999)">
                 <select id="manual-type" class="form-control">
-                    <option value="Digital">Digital</option><option value="DVD">DVD</option>
-                    <option value="VHS">VHS</option><option value="Telegram">Telegram</option>
+                    <option value="DVD">DVD</option>
+                    <option value="VHS">VHS</option>
+                    <option value="Digital">Digital</option>
+                    <option value="Blu-ray">Blu-ray</option>
                 </select>
                 <button type="submit" id="add-manual-button" class="btn btn-primary" style="background:var(--success-color);">Adicionar</button>
             </form>
@@ -428,27 +433,45 @@
         <h2><i class="fas fa-film"></i> Minha Coleção</h2>
         <div class="tabs">
             <div class="tab active" data-filter="all">Todos</div>
-            <div class="tab" data-filter="Digital">Digital</div>
             <div class="tab" data-filter="DVD">DVD</div>
             <div class="tab" data-filter="VHS">VHS</div>
-            <div class="tab" data-filter="Telegram">Telegram</div>
+            <div class="tab" data-filter="Digital">Digital</div>
+            <div class="tab" data-filter="Blu-ray">Blu-ray</div>
             <div class="tab" data-filter="watched">Assistidos</div>
             <div class="tab" data-filter="favorite">Favoritos</div>
         </div>
         <div id="movie-collection" class="movies-grid">
-            <div class="empty-state">
-                <i class="fas fa-film" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                <h3>Sua coleção está vazia</h3>
-                <p>Adicione filmes usando o formulário acima.</p>
             </div>
-        </div>
     </div>
 </div>
 
-<script type="module">
-    // --- CONFIGURAÇÃO SIMULADA (SEM FIREBASE) ---
-    console.log("Modo de demonstração: usando localStorage em vez de Firebase");
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+<script>
+    // --- PASSO 1: CONFIGURAÇÃO DO FIREBASE ---
+    // Cole aqui o objeto de configuração do seu projeto Firebase.
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SEU_AUTH_DOMAIN",
+      projectId: "SEU_PROJECT_ID",
+      storageBucket: "SEU_STORAGE_BUCKET",
+      messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+      appId: "SEU_APP_ID"
+    };
     
+    // --- PASSO 2: CHAVE DA API OMDb ---
+    // Obtenha uma chave grátis em: https://www.omdbapi.com/apikey.aspx
+    const OMDB_API_KEY = "SUA_CHAVE_OMDB";
+
+
+    // --- INICIALIZAÇÃO DO FIREBASE ---
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+
     // --- SELETORES DE ELEMENTOS ---
     const loginScreen = document.getElementById('login-screen');
     const appScreen = document.getElementById('app-screen');
@@ -456,6 +479,8 @@
     const passwordInput = document.getElementById('password');
     const messageArea = document.getElementById('message-area');
     const messageText = document.getElementById('message-text');
+    const authMessageArea = document.getElementById('auth-message-area');
+    const authMessageText = document.getElementById('auth-message-text');
     const movieCollection = document.getElementById('movie-collection');
     const tabsContainer = document.querySelector('.tabs');
     const movieResults = document.getElementById('movie-results');
@@ -464,117 +489,128 @@
     let currentUser = null;
     let localMoviesCache = [];
     let currentFilter = 'all';
+    let unsubscribeMoviesListener = null; // Para parar de ouvir o DB ao fazer logout
 
-    // --- LÓGICA DE AUTENTICAÇÃO SIMULADA ---
-    function simulateAuthStateChange(user) {
+    // --- LÓGICA DE AUTENTICAÇÃO REAL ---
+    auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
             loginScreen.classList.add('hidden');
             appScreen.classList.remove('hidden');
             appScreen.classList.add('fade-in');
             userEmailSpan.textContent = user.email;
-            loadMoviesFromStorage();
+            loadMovies(); // Carrega os filmes do usuário logado
         } else {
             currentUser = null;
+            if (unsubscribeMoviesListener) unsubscribeMoviesListener(); // Para de ouvir as atualizações
             localMoviesCache = [];
             appScreen.classList.add('hidden');
             loginScreen.classList.remove('hidden');
             setAuthButtonsLoading(false);
         }
-    }
+    });
 
+    // Login com E-mail e Senha
     document.getElementById('email-login-form').addEventListener('submit', async e => {
         e.preventDefault();
         setAuthButtonsLoading(true);
-        
-        // Simulação de login - sempre bem-sucedido nesta demonstração
-        setTimeout(() => {
-            simulateAuthStateChange({
-                uid: 'demo-user',
-                email: emailInput.value
-            });
-            showMessage("Login realizado com sucesso!", 'success');
+        try {
+            await auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value);
+            // onAuthStateChanged cuidará do resto
+        } catch (error) {
+            showAuthMessage(translateAuthError(error.code));
             setAuthButtonsLoading(false);
-        }, 1000);
+        }
     });
 
+    // Criar conta
     document.getElementById('signup-button').addEventListener('click', async () => {
         setAuthButtonsLoading(true);
-        
-        // Simulação de cadastro
-        setTimeout(() => {
-            showMessage("Conta criada com sucesso! Faça o login.", 'success');
+        try {
+            await auth.createUserWithEmailAndPassword(emailInput.value, passwordInput.value);
+            showAuthMessage("Conta criada com sucesso! Você já está logado.", 'success');
+        } catch (error) {
+            showAuthMessage(translateAuthError(error.code));
+        } finally {
             setAuthButtonsLoading(false);
-        }, 1000);
+        }
     });
 
+    // Login com Google
     document.getElementById('google-login-button').addEventListener('click', async () => {
         setAuthButtonsLoading(true);
-        
-        // Simulação de login com Google
-        setTimeout(() => {
-            simulateAuthStateChange({
-                uid: 'demo-user-google',
-                email: 'usuario.google@exemplo.com'
-            });
-            showMessage("Login com Google realizado com sucesso!", 'success');
+        try {
+            await auth.signInWithPopup(googleProvider);
+        } catch (error) {
+            showAuthMessage(translateAuthError(error.code));
             setAuthButtonsLoading(false);
-        }, 1000);
+        }
     });
 
+    // Logout
     document.getElementById('logout-button').addEventListener('click', () => {
-        simulateAuthStateChange(null);
-        showMessage("Logout realizado com sucesso.", 'success');
+        auth.signOut();
+        showMessage("Você foi desconectado.", 'success');
     });
 
-    // --- LÓGICA DE ARMAZENAMENTO LOCAL ---
-    function loadMoviesFromStorage() {
-        const storedMovies = localStorage.getItem('movieCollection');
-        if (storedMovies) {
-            localMoviesCache = JSON.parse(storedMovies);
-            renderCollection();
-        }
-    }
-
-    function saveMoviesToStorage() {
-        localStorage.setItem('movieCollection', JSON.stringify(localMoviesCache));
-    }
-
-    function addOrUpdateMovie(movieData, id) {
-        const docId = id || movieData.imdbID || (movieData.Title.replace(/\s+/g, '') + movieData.Year);
-        const existingIndex = localMoviesCache.findIndex(m => m.id === docId);
+    // --- LÓGICA DO FIRESTORE (BANCO DE DADOS) ---
+    function loadMovies() {
+        if (!currentUser) return;
         
-        if (existingIndex !== -1) {
-            // Atualizar filme existente
-            localMoviesCache[existingIndex] = { ...localMoviesCache[existingIndex], ...movieData };
-        } else {
-            // Adicionar novo filme
-            localMoviesCache.push({
-                id: docId,
-                ...movieData
+        // Cria uma "escuta" em tempo real para a coleção de filmes do usuário
+        unsubscribeMoviesListener = db.collection('movies')
+            .where('userId', '==', currentUser.uid) // ESSENCIAL: Filtra filmes apenas deste usuário
+            .onSnapshot(snapshot => {
+                localMoviesCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderCollection();
+            }, error => {
+                console.error("Erro ao carregar filmes: ", error);
+                showMessage("Não foi possível carregar sua coleção.", 'error');
             });
-        }
-        
-        saveMoviesToStorage();
-        renderCollection();
-        showMessage(`"${movieData.Title}" salvo na coleção!`, 'success');
     }
 
-    function deleteMovie(id) {
+    async function addMovie(movieData) {
+        if (!currentUser) return;
+        try {
+            const movieToAdd = {
+                ...movieData,
+                userId: currentUser.uid, // Adiciona o ID do usuário ao filme
+                createdAt: firebase.firestore.FieldValue.serverTimestamp() // Adiciona data de criação
+            };
+            await db.collection('movies').add(movieToAdd);
+            showMessage(`"${movieData.Title}" adicionado à coleção!`, 'success');
+        } catch (error) {
+            console.error("Erro ao adicionar filme: ", error);
+            showMessage("Ocorreu um erro ao salvar o filme.", 'error');
+        }
+    }
+
+    async function deleteMovie(id) {
         if (confirm("Tem certeza que deseja remover este filme da coleção?")) {
-            localMoviesCache = localMoviesCache.filter(m => m.id !== id);
-            saveMoviesToStorage();
-            renderCollection();
-            showMessage("Filme removido.", 'success');
+            try {
+                await db.collection('movies').doc(id).delete();
+                showMessage("Filme removido com sucesso.", 'success');
+                // A renderização é automática por causa do onSnapshot
+            } catch (error) {
+                console.error("Erro ao remover filme: ", error);
+                showMessage("Ocorreu um erro ao remover o filme.", 'error');
+            }
         }
     }
 
-    function toggleMovieProperty(id, property) {
-        const movieIndex = localMoviesCache.findIndex(m => m.id === id);
-        if (movieIndex !== -1) {
-            localMoviesCache[movieIndex][property] = !localMoviesCache[movieIndex][property];
-            saveMoviesToStorage();
-            renderCollection();
+    async function toggleMovieProperty(id, property) {
+        const movie = localMoviesCache.find(m => m.id === id);
+        if (movie) {
+            try {
+                const movieRef = db.collection('movies').doc(id);
+                await movieRef.update({
+                    [property]: !movie[property]
+                });
+                // A renderização também é automática aqui
+            } catch (error) {
+                console.error(`Erro ao atualizar ${property}: `, error);
+                showMessage(`Não foi possível atualizar o filme.`, 'error');
+            }
         }
     }
 
@@ -590,11 +626,10 @@
 
         if (filteredMovies.length === 0) {
             movieCollection.innerHTML = `
-                <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #aaa;">
                     <i class="fas fa-film" style="font-size: 3rem; margin-bottom: 15px;"></i>
                     <h3>Nenhum filme encontrado</h3>
-                    <p>${currentFilter === 'all' ? 'Adicione alguns filmes à sua coleção!' : 
-                      `Nenhum filme na categoria ${currentFilter}.`}</p>
+                    <p>${currentFilter === 'all' ? 'Adicione filmes usando os formulários acima!' : `Nenhum filme na categoria "${currentFilter}".`}</p>
                 </div>`;
             return;
         }
@@ -607,7 +642,7 @@
         card.className = 'movie-card fade-in';
         card.innerHTML = `
             <div class="movie-poster-container">
-                <img src="${movie.Poster && movie.Poster !== 'N/A' ? movie.Poster : 'https://placehold.co/300x450/2c3e50/ecf0f1?text=' + encodeURIComponent(movie.Title)}" class="movie-poster" alt="Pôster de ${movie.Title}">
+                <img src="${movie.Poster && movie.Poster !== 'N/A' ? movie.Poster : 'https://placehold.co/300x450/2c3e50/ecf0f1?text=' + encodeURIComponent(movie.Title)}" class="movie-poster" alt="Pôster de ${movie.Title}" loading="lazy">
                 <div class="card-icons">
                    <i class="fas fa-heart card-icon ${movie.Favorite ? 'active' : ''}" data-action="toggleFavorite" data-id="${movie.id}" title="Favoritar"></i>
                    <i class="fas fa-eye card-icon ${movie.Watched ? 'active' : ''}" data-action="toggleWatched" data-id="${movie.id}" title="Marcar como assistido"></i>
@@ -615,65 +650,67 @@
             </div>
             <div class="movie-info">
                 <h3 class="movie-title">${movie.Title}</h3>
-                <p class="movie-details">${movie.Year || ''} • ${movie.Type || 'Digital'}</p>
-                ${movie.Genre ? `<p class="movie-details">${movie.Genre}</p>` : ''}
+                <p class="movie-details">${movie.Year || ''} • ${movie.Type || 'DVD'}</p>
             </div>
             <div class="movie-actions">
-                <button class="action-btn btn-danger delete-btn" data-action="delete" data-id="${movie.id}"><i class="fas fa-trash"></i> Remover</button>
+                <button class="btn btn-danger action-btn" data-action="delete" data-id="${movie.id}"><i class="fas fa-trash"></i> Remover</button>
             </div>`;
         return card;
     }
 
-    // --- BUSCA OMDb E ADIÇÃO ---
+    // --- BUSCA NA API OMDb ---
     document.getElementById('search-form').addEventListener('submit', async e => {
         e.preventDefault();
         const title = document.getElementById('movie-title-input').value;
         if (!title) return;
         
-        // Simulação de busca na API OMDb
-        movieResults.innerHTML = '<p style="padding: 15px; text-align: center;">Buscando filmes... <span class="loading"></span></p>';
-        
-        setTimeout(() => {
-            // Resultados de exemplo (simulados)
-            const mockResults = [
-                { 
-                    Title: "Matrix", 
-                    Year: "1999", 
-                    imdbID: "tt0133093", 
-                    Poster: "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
-                    Type: "movie"
-                },
-                { 
-                    Title: "The Matrix Reloaded", 
-                    Year: "2003", 
-                    imdbID: "tt0234215", 
-                    Poster: "https://m.media-amazon.com/images/M/MV5BODE0MzZhZTgtYzkwYi00YmI5LThlZWYtOWRmNWE5ODk0NzMxXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
-                    Type: "movie"
-                }
-            ];
-            
-            movieResults.innerHTML = '';
-            mockResults.forEach(movie => {
-                const resultCard = document.createElement('div');
-                resultCard.style.cssText = 'display:flex; align-items:center; gap:15px; background:var(--card-bg); padding:10px; border-radius:8px; margin-bottom:10px;';
-                resultCard.innerHTML = `
-                    <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://placehold.co/50x75'}" style="width:50px; height:75px; object-fit:cover; border-radius:4px;">
-                    <div style="flex:1;"><strong>${movie.Title}</strong> (${movie.Year})</div>
-                    <button class="btn btn-primary add-from-search-btn" style="width:auto; padding:8px 12px;">Adicionar</button>`;
-                resultCard.querySelector('.add-from-search-btn').onclick = () => {
-                    addOrUpdateMovie({ 
-                        Title: movie.Title, 
-                        Year: movie.Year, 
-                        Poster: movie.Poster, 
-                        Watched: false, 
-                        Favorite: false, 
-                        Type: 'Digital' 
-                    }, movie.imdbID);
-                    movieResults.innerHTML = '';
-                };
-                movieResults.appendChild(resultCard);
-            });
-        }, 1500);
+        if (OMDB_API_KEY === "SUA_CHAVE_OMDB") {
+            showMessage("Configure sua chave da API OMDb no código para buscar filmes.", "error");
+            return;
+        }
+
+        const searchButton = document.getElementById('search-button');
+        searchButton.disabled = true;
+        searchButton.innerHTML = '<span class="loading"></span>';
+        movieResults.innerHTML = '';
+
+        try {
+            const response = await fetch(`https://www.omdbapi.com/?s=${encodeURIComponent(title)}&apikey=${OMDB_API_KEY}`);
+            const data = await response.json();
+
+            if (data.Response === "True") {
+                data.Search.forEach(movie => {
+                    const resultCard = document.createElement('div');
+                    resultCard.style.cssText = 'display:flex; align-items:center; gap:15px; background:var(--card-bg); padding:10px; border-radius:8px; margin-bottom:10px;';
+                    resultCard.innerHTML = `
+                        <img src="${movie.Poster !== 'N/A' ? movie.Poster : 'https://placehold.co/50x75'}" style="width:50px; height:75px; object-fit:cover; border-radius:4px;">
+                        <div style="flex:1;"><strong>${movie.Title}</strong> (${movie.Year})</div>
+                        <button class="btn btn-primary add-from-search-btn" style="width:auto; padding:8px 12px;">Adicionar</button>`;
+                    
+                    resultCard.querySelector('.add-from-search-btn').onclick = () => {
+                        addMovie({ 
+                            Title: movie.Title, 
+                            Year: movie.Year, 
+                            Poster: movie.Poster, 
+                            imdbID: movie.imdbID,
+                            Watched: false, 
+                            Favorite: false, 
+                            Type: 'Digital' // Padrão ao adicionar da busca
+                        });
+                        movieResults.innerHTML = '';
+                    };
+                    movieResults.appendChild(resultCard);
+                });
+            } else {
+                movieResults.innerHTML = `<p style="padding: 15px; text-align: center;">${data.Error || 'Nenhum filme encontrado.'}</p>`;
+            }
+        } catch (error) {
+            console.error("Erro na busca OMDb:", error);
+            movieResults.innerHTML = `<p style="padding: 15px; text-align: center;">Erro ao conectar com a API de filmes.</p>`;
+        } finally {
+            searchButton.disabled = false;
+            searchButton.innerHTML = 'Buscar';
+        }
     });
 
     document.getElementById('manual-add-form').addEventListener('submit', e => {
@@ -691,7 +728,7 @@
             Type: document.getElementById('manual-type').value
         };
         
-        addOrUpdateMovie(movieData);
+        addMovie(movieData);
         e.target.reset();
     });
 
@@ -721,11 +758,15 @@
 
     function showMessage(msg, type = 'success') {
         messageText.textContent = msg;
-        messageArea.classList.remove('hidden', 'success', 'error');
-        messageArea.classList.add(type);
+        messageArea.className = `message ${type}`;
         setTimeout(() => {
             messageArea.classList.add('hidden');
         }, 5000);
+    }
+
+    function showAuthMessage(msg, type = 'error') {
+        authMessageText.textContent = msg;
+        authMessageArea.className = `message ${type}`;
     }
 
     function setAuthButtonsLoading(isLoading) {
@@ -737,58 +778,28 @@
         buttons.forEach(btn => {
             btn.disabled = isLoading;
             if (isLoading) {
-                if (!btn.dataset.originalContent) {
-                    btn.dataset.originalContent = btn.innerHTML;
-                }
+                if (!btn.dataset.originalContent) btn.dataset.originalContent = btn.innerHTML;
                 btn.innerHTML = '<span class="loading"></span> Processando...';
             } else {
-                if (btn.dataset.originalContent) {
-                    btn.innerHTML = btn.dataset.originalContent;
-                }
+                if (btn.dataset.originalContent) btn.innerHTML = btn.dataset.originalContent;
             }
         });
     }
 
-    // Adicionar alguns filmes de exemplo se estiver vazio
-    function addExampleMovies() {
-        if (localMoviesCache.length === 0) {
-            const examples = [
-                {
-                    id: "tt0133093",
-                    Title: "Matrix",
-                    Year: "1999",
-                    Genre: "Action, Sci-Fi",
-                    Poster: "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
-                    Type: "Digital",
-                    Watched: true,
-                    Favorite: true
-                },
-                {
-                    id: "tt0167260",
-                    Title: "The Lord of the Rings: The Two Towers",
-                    Year: "2002",
-                    Genre: "Adventure, Drama, Fantasy",
-                    Poster: "https://m.media-amazon.com/images/M/MV5BZGMxZTdjZmYtMmE2Ni00ZTdkLWI5NTgtNjlmMjBiNzU2MmI5XkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_.jpg",
-                    Type: "Blu-ray",
-                    Watched: true,
-                    Favorite: false
-                }
-            ];
-            
-            localMoviesCache = examples;
-            saveMoviesToStorage();
-            renderCollection();
+    function translateAuthError(code) {
+        switch (code) {
+            case 'auth/wrong-password':
+                return 'Senha incorreta. Tente novamente.';
+            case 'auth/user-not-found':
+                return 'Nenhum usuário encontrado com este e-mail.';
+            case 'auth/email-already-in-use':
+                return 'Este e-mail já está em uso por outra conta.';
+            case 'auth/weak-password':
+                return 'A senha deve ter pelo menos 6 caracteres.';
+            default:
+                return 'Ocorreu um erro. Tente novamente mais tarde.';
         }
     }
-
-    // Inicialização
-    setTimeout(() => {
-        // Simular estado inicial sem usuário logado
-        simulateAuthStateChange(null);
-        
-        // Adicionar filmes de exemplo após um breve delay
-        setTimeout(addExampleMovies, 1000);
-    }, 500);
 </script>
 </body>
 </html>

@@ -1,112 +1,98 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MyMovies - Coleção</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+<title>MyMovies - Coleção</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="container-card" style="max-width:720px;margin:18px auto;">
-      <div class="header">
-        <div>
-          <div class="title">My<span style="color:var(--accent)">Movies</span></div>
-          <div class="small">Entre para acessar sua coleção</div>
-        </div>
-        <div id="user-actions"><!-- future: profile/status --></div>
-      </div>
-
-      <div id="auth-area" class="auth">
-        <div class="form-row" style="margin-bottom:10px">
-          <input id="email" class="input" placeholder="E-mail" />
-        </div>
-        <div class="form-row" style="margin-bottom:12px">
-          <input id="password" type="password" class="input" placeholder="Senha (mín 6)" />
-        </div>
-        <div class="form-row">
-          <button id="btn-login" class="btn">Entrar</button>
-          <button id="btn-signup" class="btn ghost">Criar conta</button>
-          <button id="btn-google" class="btn ghost"><i class="fab fa-google"></i>&nbsp;Google</button>
-        </div>
-        <div id="auth-msg" class="small" style="margin-top:10px;color:#fca5a5"></div>
+<div class="app">
+  <!-- LOGIN SCREEN -->
+  <div id="login-screen" class="container-card login-card">
+    <div class="header">
+      <div>
+        <div class="title">My<span style="color:var(--accent)">Movies</span></div>
+        <div class="small">Entre para acessar sua coleção</div>
       </div>
     </div>
 
-    <!-- APP SCREEN -->
-    <div id="app-screen" class="hidden">
-      <div class="header">
-        <div>
-          <div class="title">My<span style="color:var(--accent)">Movies</span></div>
-          <div class="small" id="user-email"></div>
-        </div>
-        <div class="flex">
-          <button id="btn-logout" class="btn ghost">Sair</button>
-        </div>
+    <div id="auth-area" class="auth">
+      <div class="form-row">
+        <input id="email" class="input" placeholder="E-mail" />
       </div>
-
-      <div class="container-card">
-        <div class="flex" style="justify-content:space-between;align-items:center;gap:16px">
-          <div style="flex:1;min-width:220px;">
-            <div class="small">Buscar no OMDb (títulos com espaços OK)</div>
-            <div class="form-row" style="margin-top:8px">
-              <input id="search-title" class="input" placeholder="Digite o título e toque em Buscar..." />
-              <button id="search-btn" class="btn">Buscar</button>
-            </div>
-            <div id="search-results" class="search-results"></div>
-          </div>
-
-          <div style="min-width:220px">
-            <div class="small">Contadores</div>
-            <div class="counters" style="margin-top:8px">
-              <div class="counter"><div class="num" id="count-all">0</div><div class="small">Total</div></div>
-              <div class="counter"><div class="num" id="count-dvd">0</div><div class="small">DVD</div></div>
-              <div class="counter"><div class="num" id="count-digital">0</div><div class="small">Digital</div></div>
-              <div class="counter"><div class="num" id="count-vhs">0</div><div class="small">VHS</div></div>
-            </div>
-          </div>
-        </div>
+      <div class="form-row">
+        <input id="password" type="password" class="input" placeholder="Senha" />
       </div>
-
-      <div class="container-card" style="margin-top:12px">
-        <div class="small">Adicionar manualmente (campos opcionais)</div>
-        <div class="form-row" style="margin-top:8px">
-          <input id="manual-title" class="input" placeholder="Título" />
-          <input id="manual-year" class="input" placeholder="Ano (opcional)" />
-          <select id="manual-type" class="input">
-            <option value="DVD">DVD</option>
-            <option value="Blu-ray">Blu-ray</option>
-            <option value="Digital">Digital</option>
-            <option value="VHS">VHS</option>
-            <option value="Telegram">Telegram</option>
-            <option value="Arquivo">Arquivo</option>
-            <option value="Outro">Outro</option>
-          </select>
-          <button id="manual-add-btn" class="btn" style="min-width:120px">Adicionar</button>
-        </div>
+      <div class="form-row">
+        <button id="btn-login" class="btn full">Entrar</button>
+        <button id="btn-signup" class="btn ghost full">Criar conta</button>
+        <button id="btn-google" class="btn ghost full"><i class="fab fa-google"></i>&nbsp;Google</button>
       </div>
-
-      <div style="margin-top:12px">
-        <div class="tabs" id="tabs">
-          <div class="tab active" data-filter="all">Todos</div>
-          <div class="tab" data-filter="DVD">DVD</div>
-          <div class="tab" data-filter="Blu-ray">Blu-ray</div>
-          <div class="tab" data-filter="Digital">Digital</div>
-          <div class="tab" data-filter="VHS">VHS</div>
-          <div class="tab" data-filter="Telegram">Telegram</div>
-          <div class="tab" data-filter="watched">Assistidos</div>
-          <div class="tab" data-filter="favorite">Favoritos</div>
-        </div>
-
-        <div id="collection" class="grid" style="margin-top:12px"></div>
-      </div>
-
-      <div class="footer">App com Firebase Auth + Firestore. Busca via OMDb.</div>
+      <div id="auth-msg" class="small" style="margin-top:10px;color:#fca5a5"></div>
     </div>
   </div>
 
-  <script type="module" src="./app.js"></script>
+  <!-- APP SCREEN -->
+  <div id="app-screen" class="hidden">
+    <div class="header">
+      <div>
+        <div class="title">My<span style="color:var(--accent)">Movies</span></div>
+        <div class="small" id="user-email"></div>
+      </div>
+      <div class="flex">
+        <button id="btn-logout" class="btn ghost">Sair</button>
+      </div>
+    </div>
+
+    <!-- BUSCA -->
+    <div class="container-card">
+      <div class="form-row">
+        <input id="search-title" class="input full" placeholder="Digite título para buscar..." />
+        <button id="search-btn" class="btn">Buscar</button>
+      </div>
+      <div id="search-results" class="search-results"></div>
+    </div>
+
+    <!-- ADICIONAR MANUAL -->
+    <div class="container-card">
+      <div class="form-row">
+        <input id="manual-title" class="input" placeholder="Título" />
+        <input id="manual-year" class="input" placeholder="Ano" />
+        <select id="manual-type" class="input">
+          <option value="DVD">DVD</option>
+          <option value="Blu-ray">Blu-ray</option>
+          <option value="Digital">Digital</option>
+          <option value="VHS">VHS</option>
+          <option value="Telegram">Telegram</option>
+          <option value="Arquivo">Arquivo</option>
+          <option value="Outro">Outro</option>
+        </select>
+        <button id="manual-add-btn" class="btn">Adicionar</button>
+      </div>
+    </div>
+
+    <!-- FILMES -->
+    <div class="container-card">
+      <div class="tabs" id="tabs">
+        <div class="tab active" data-filter="all">Todos</div>
+        <div class="tab" data-filter="DVD">DVD</div>
+        <div class="tab" data-filter="Blu-ray">Blu-ray</div>
+        <div class="tab" data-filter="Digital">Digital</div>
+        <div class="tab" data-filter="VHS">VHS</div>
+        <div class="tab" data-filter="Telegram">Telegram</div>
+        <div class="tab" data-filter="watched">Assistidos</div>
+        <div class="tab" data-filter="favorite">Favoritos</div>
+      </div>
+
+      <div id="collection" class="grid"></div>
+    </div>
+
+    <div class="footer">App local + Firebase Auth + Firestore. Busca via TMDb em português.</div>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
 </body>
 </html>
